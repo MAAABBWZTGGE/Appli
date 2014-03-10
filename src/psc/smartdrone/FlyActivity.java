@@ -29,17 +29,5 @@ public class FlyActivity extends Activity {
 		intent.putExtra(FormIPActivity.IP_MESSAGE, dstIP);
 		startService(mService);
 	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		//mSensorListener.pause();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		//mSensorListener.resume();
-	}
 	
 }

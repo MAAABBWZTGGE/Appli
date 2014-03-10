@@ -25,9 +25,9 @@ public class FlyService extends Service {
 		String dstIP = intent.getStringExtra(FormIPActivity.IP_MESSAGE);
 
 		mStartId = startId;
-		//mSensorListener = new SensorListener(this, new DataSender(dstIP, 6157), "/storage/sdcard0/Documents/Logs/");
+		mSensorListener = new SensorListener(this, new DataSender(dstIP, 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.44.204", 6157), "/storage/sdcard0/Documents/Logs/");
-		mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
+		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
 		mSensorListener.start();
 		
 		return START_REDELIVER_INTENT;

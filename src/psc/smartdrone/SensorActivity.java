@@ -102,14 +102,17 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		mLocationManager.removeUpdates(this);
 	}
 
+	/*
 	long _start = 0;
 	long _timestamp = 0;
 	int _count = 0;
+	//*/
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		if (event.sensor == mPressure)
 		{
+			/*
 			if (_start == 0)
 				_start = event.timestamp;
 			_timestamp = event.timestamp;
@@ -117,6 +120,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 			
 			if (_count == 100)
 				Log.d("Time", String.valueOf((double) (_timestamp - _start) / 1e11));
+			//*/
 			
 			TextView text = (TextView)findViewById(R.id.pressure);
 			text.setText("pressure : " + event.values[0] + " hPa");
