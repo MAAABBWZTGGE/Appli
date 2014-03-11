@@ -15,7 +15,7 @@ public class IOIO {
 	enum Channel {GAZ, LACET, TANGAGE, ROULIS};
 	
 	class Looper extends BaseIOIOLooper {
-		//TODO: check servo PWM frequency & duty cycle <-> command relation
+		//TODO: check servo PWM frequency & duty cycle <-> command relation (ok)
 		//TODO: assign correct pin to each channel
 		
 		public final static int freqHz = 100;
