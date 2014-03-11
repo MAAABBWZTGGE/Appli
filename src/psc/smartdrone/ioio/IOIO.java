@@ -1,8 +1,10 @@
 package psc.smartdrone.ioio;
 
 import ioio.lib.api.AnalogInput;
+import ioio.lib.api.DigitalInput.Spec;
 import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.PulseInput;
+import ioio.lib.api.PulseInput.ClockRate;
 import ioio.lib.api.PulseInput.PulseMode;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
@@ -13,11 +15,10 @@ public class IOIO {
 	enum Channel {GAZ, LACET, TANGAGE, ROULIS};
 	
 	class Looper extends BaseIOIOLooper {
-		/** The on-board LED. */
-		//TODO: check servo frequency
+		//TODO: check servo PWM frequency & duty cycle <-> command relation
 		//TODO: assign correct pin to each channel
 		
-		public final static int freqHz = 10000;
+		public final static int freqHz = 100;
 		
 		//Outputs
 		private DigitalOutput led_;
@@ -60,7 +61,38 @@ public class IOIO {
 			}
 		}
 		
-		public float duty_cycle(double c, boolean is_gaz) {
+		public float get_radio_command(Channel c) {
+			switch(c) {
+			case GAZ:
+				return radio_gaz_value;
+			case LACET:
+				return radio_lacet_value;
+			case TANGAGE:
+				return radio_tangage_value;
+			case ROULIS:
+				return radio_roulis_value;
+			}
+			return (float) 0.;
+		}
+		
+		public float get_battery_voltage() {
+			return battery_voltage_value;
+		}
+		
+		protected float true_voltage(float measured_voltage) {
+			return (float) (5. * measured_voltage);
+		}
+		
+		protected float command(float high_duration, boolean is_gaz) {
+			float duty_cycle = high_duration * freqHz;
+			if(is_gaz) {
+				return (float) ((duty_cycle - 0.1) * 10);
+			} else {
+				return (float) ((duty_cycle - 0.15) * 20);
+			}
+		}
+		
+		protected float duty_cycle(double c, boolean is_gaz) {
 			if(c > 1.0){
 				c = 1.0;
 			}
@@ -70,9 +102,9 @@ public class IOIO {
 				c= -1.0;
 			}
 			if(is_gaz) {
-				return (float) (c / 10.0);
+				return (float) ((c + 1.0) / 10.0);
 			}
-			return (float) ((c + 1.0) / 20.0);
+			return (float) ((c + 3.0) / 20.0);
 		}
 
 		/**
@@ -91,10 +123,10 @@ public class IOIO {
 			lacet_ = ioio_.openPwmOutput(2, freqHz);
 			roulis_ = ioio_.openPwmOutput(3, freqHz);
 			tangage_ = ioio_.openPwmOutput(4, freqHz);
-			radio_gaz = ioio_.openPulseInput(5, PulseMode.FREQ);
-			radio_lacet = ioio_.openPulseInput(6, PulseMode.FREQ);
-			radio_roulis = ioio_.openPulseInput(7, PulseMode.FREQ);
-			radio_tangage = ioio_.openPulseInput(8, PulseMode.FREQ);
+			radio_gaz = ioio_.openPulseInput(new Spec(5), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+			radio_lacet = ioio_.openPulseInput(new Spec(6), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+			radio_roulis = ioio_.openPulseInput(new Spec(7), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+			radio_tangage = ioio_.openPulseInput(new Spec(8), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 			battery_voltage = ioio_.openAnalogInput(9);
 		}
 
@@ -108,13 +140,22 @@ public class IOIO {
 		 */
 		@Override
 		public void loop() throws ConnectionLostException {
+			//Output
 			led_.write(state = !state);
 			gaz_.setDutyCycle(duty_cycle(gaz_command, true));
 			lacet_.setDutyCycle(duty_cycle(lacet_command, false));
 			roulis_.setDutyCycle(duty_cycle(roulis_command, false));
 			tangage_.setDutyCycle(duty_cycle(tangage_command, false));
-			try {
-				Thread.sleep(100);
+			
+			//Input
+			
+			try{
+				battery_voltage_value = true_voltage(battery_voltage.getVoltage());
+				radio_gaz_value = command(radio_gaz.getDuration(), true);
+				radio_lacet_value = command(radio_lacet.getDuration(), false);
+				radio_tangage_value = command(radio_tangage.getDuration(), false);
+				radio_roulis_value = command(radio_roulis.getDuration(), false);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 			}
 		}
