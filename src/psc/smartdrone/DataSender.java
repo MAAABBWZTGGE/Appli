@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 
+import android.util.Log;
+
 /**
  * Thread which send packets to the chosen IP/port.
  * @author guillaume
@@ -40,14 +42,19 @@ public class DataSender extends Thread {
 	 * @see java.lang.Thread#run()
 	 */
     public void run() {
+		Log.d("DataSender", "run()");
     	//*
 		try {
+			Log.d("DataSender", "new Socket at " + mDstIP + ":" + mDstPort + "...");
 			mSocket = new Socket(mDstIP, mDstPort);
+			Log.d("DataSender", "new Socket : success at " + mDstIP + ":" + mDstPort);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
+			Log.d("UnknownHostException", e.toString());
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			Log.d("IOException", e.toString());
 			e.printStackTrace();
 		}
 		//*/
@@ -58,6 +65,7 @@ public class DataSender extends Thread {
 				sendPaquet();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				Log.d("IOException", e.toString());
 				e.printStackTrace();
 			}
     	}
@@ -73,6 +81,7 @@ public class DataSender extends Thread {
 				mSocket = null;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				Log.d("IOException", e.toString());
 				e.printStackTrace();
 			}
 		}
