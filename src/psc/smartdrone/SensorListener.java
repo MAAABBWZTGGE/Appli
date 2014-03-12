@@ -16,6 +16,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -203,9 +204,11 @@ public class SensorListener implements SensorEventListener, LocationListener {
 	public void onLocationChanged(Location location) {
 		try {
 			//Log.d("location", String.valueOf(location.getTime() / 1000.0));
-			mDataSender.sendPaquet(Paquet.makeLocation((long)location.getTime() * 1000000, (float)location.getLatitude(), (float)location.getLongitude(), (float)location.getAltitude(), location.getSpeed(), location.getAccuracy()));
+			long timeStampSinceEpoch = location.getTime();
+			long timeStampSinceBoot = timeStampSinceEpoch + SystemClock.uptimeMillis() - System.currentTimeMillis();
+			mDataSender.sendPaquet(Paquet.makeLocation(timeStampSinceBoot * 1000000, (float)location.getLatitude(), (float)location.getLongitude(), (float)location.getAltitude(), location.getSpeed(), location.getAccuracy()));
 			if (mFileWriter != null)
-				mFileWriter.write("l:" + (location.getTime() / 1000.0) + ":" + location.getLatitude() + "," + location.getLongitude() + "," + location.getAltitude() + ":" + location.getSpeed() + ":" + location.getAccuracy() + "\n");
+				mFileWriter.write("\nl:" + (timeStampSinceBoot / 1000.0) + ":" + location.getLatitude() + "," + location.getLongitude() + "," + location.getAltitude() + ":" + location.getSpeed() + ":" + location.getAccuracy() + "\n");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
