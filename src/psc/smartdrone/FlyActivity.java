@@ -26,7 +26,7 @@ public class FlyActivity extends Activity {
 		String dstIP = intent.getStringExtra(FormIPActivity.IP_MESSAGE);
 
 		mService = new Intent(this, FlyService.class);
-		intent.putExtra(FormIPActivity.IP_MESSAGE, dstIP);
+		mService.putExtra(FormIPActivity.IP_MESSAGE, dstIP);
 		startService(mService);
 	}
 	
