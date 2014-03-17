@@ -2,8 +2,6 @@ package psc.smartdrone.sensor;
 
 import java.nio.ByteBuffer;
 
-import android.location.Location;
-
 
 /**
  * Packet of sensor data to be sent on a TCP connection.
