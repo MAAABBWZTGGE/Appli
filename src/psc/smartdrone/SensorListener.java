@@ -127,11 +127,9 @@ public class SensorListener implements SensorEventListener, LocationListener {
 				File dir = new File(mPathFileLog);
 				dir.mkdirs();
 				
-				//*
 				String fmt = "yyyy-MM-dd HH:mm:ss";
 				SimpleDateFormat sdf = new SimpleDateFormat(fmt, Locale.US);
 				String date = String.format("%s", sdf.format(new Date()));
-				//*/
 				
 				mLogFile = File.createTempFile(date + "~", ".txt", dir);
 				mFileWriter = new FileWriter(mLogFile);

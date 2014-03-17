@@ -29,11 +29,10 @@ public class FormIPActivity extends Activity {
 		EditText edit = (EditText)findViewById(R.id.editTextIP);
 		String dstIP = edit.getText().toString();
 		Log.d("IP", dstIP);
-		//*
+
 		Intent intent = new Intent(this, FlyActivity.class);
 		intent.putExtra(IP_MESSAGE, dstIP);
 		startActivity(intent);
-		//*/
 	}
 	
 }
