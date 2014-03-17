@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
 	 * Called when user press button.
 	 */
 	public void launchFly(View view) {
-		startActivity(new Intent(this, FormIPActivity.class));
+		startActivity(new Intent(this, FlyActivity.class));
 	}
 
 	public void launchSensors(View view) {

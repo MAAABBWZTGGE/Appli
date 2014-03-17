@@ -22,7 +22,7 @@ public class FlyService extends Service {
 
 		Log.d("FlyService", "onStartCommand()");
 		
-		String dstIP = intent.getStringExtra(FormIPActivity.IP_MESSAGE);
+		String dstIP = intent.getStringExtra(FlyActivity.IP_MESSAGE);
 
 		mStartId = startId;
 		mSensorListener = new SensorListener(this, new DataSender(dstIP, 6157), "/storage/sdcard0/Documents/Logs/");

@@ -36,15 +36,6 @@
         </activity>
         
         <activity
-            android:name="psc.smartdrone.FormIPActivity"
-            android:label="@string/formip_activity" >
-            <intent-filter>
-                <action android:name="android.intent.action.ANY_NAME" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        
-        <activity
             android:name="psc.smartdrone.FlyActivity"
             android:label="@string/fly_activity" >
             <intent-filter>

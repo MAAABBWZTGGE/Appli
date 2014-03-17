@@ -4,14 +4,12 @@
     <string name="app_name">SmartDrone</string>
     <string name="action_settings">Settings</string>
     <string name="title_ip">Entrez l\'adresse IP</string>
-    <string name="button_ip">Valider</string>
-    <string name="form_ip">FormIP</string>
+    <string name="button_ip">Démarrer</string>
     <string name="fly_activity">FlyActivity</string>
     <string name="button_fly">Arrêter</string>
     <string name="sensor_activity">SensorActivity</string>
     <string name="choose_sensors">Tester les capteurs</string>
     <string name="choose_fly">Programme de vol</string>
     <string name="label_choice">Choisissez une action :</string>
-    <string name="formip_activity">FormIPActivity</string>
 
 </resources>
