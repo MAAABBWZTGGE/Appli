@@ -1,3 +1,5 @@
+package psc.smartdrone.filtre;
+
 
 public class Magn {
 	float x;

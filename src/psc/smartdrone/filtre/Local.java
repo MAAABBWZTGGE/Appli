@@ -1,3 +1,5 @@
+package psc.smartdrone.filtre;
+
 
 public class Local {
 	float lat,lon,atti,v,err;
