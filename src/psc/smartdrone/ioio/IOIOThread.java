@@ -13,7 +13,10 @@ import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
 
 
-class IOIOThread extends Thread {
+public class IOIOThread extends Thread {
+	//TODO: assign correct pin to each channel
+	//TODO: check gaz command
+	
 	enum Channel {GAZ, LACET, TANGAGE, ROULIS};
 	
 	public final static String LOG_ID = "IOIOThread";
@@ -21,8 +24,6 @@ class IOIOThread extends Thread {
 	private IOIO ioio_;
 	private boolean abort_ = false;
 	private Handler uiHandler;
-	
-	//TODO: assign correct pin to each channel
 	
 	//PWM chosen frequency
 	public final static int freqHz = 100;
@@ -50,6 +51,8 @@ class IOIOThread extends Thread {
 	private float battery_voltage_value;
 	
 	/** Helper functions */
+	
+	//Getters & setters for cammands
 	public void set_command(Channel c, double value) {
 		switch(c) {
 		case GAZ:
@@ -85,6 +88,7 @@ class IOIOThread extends Thread {
 		return battery_voltage_value;
 	}
 	
+	//Conversion functions
 	protected float true_voltage(float measured_voltage) {
 		return (float) (5. * measured_voltage);
 	}
@@ -127,7 +131,9 @@ class IOIOThread extends Thread {
 			}
 			try {
 				//Connecting
+				Log.i(LOG_ID, "Connecting...");
 				ioio_.waitForConnect();
+				Log.i(LOG_ID, "Connected.");
 				//Connected, opening ins/outs
 				gaz_ = ioio_.openPwmOutput(1, freqHz);
 				lacet_ = ioio_.openPwmOutput(2, freqHz);
@@ -158,6 +164,7 @@ class IOIOThread extends Thread {
 					sleep(20);
 				}
 			} catch (ConnectionLostException e) {
+				Log.d(LOG_ID, "Connection lost");
 			} catch (Exception e) {
 				Log.e(LOG_ID, "Unexpected exception caught", e);
 				ioio_.disconnect();
