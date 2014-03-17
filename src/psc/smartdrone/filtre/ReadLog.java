@@ -1,11 +1,16 @@
+package psc.smartdrone.filtre;
+
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Vector;
 
+import psc.smartdrone.DataSender;
+import psc.smartdrone.sensor.*;
+
 public class ReadLog {
-	public static void main (String[] args ) {
+	public static void main (String[] args) {
 		String ipAdress = "127.0.0.1";
 		DataSender dataSender = new DataSender(ipAdress, 6157);
 		dataSender.start();

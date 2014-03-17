@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 
+import psc.smartdrone.sensor.Paquet;
+
 import android.util.Log;
 
 /**

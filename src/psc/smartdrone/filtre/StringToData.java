@@ -1,3 +1,6 @@
+package psc.smartdrone.filtre;
+
+import psc.smartdrone.sensor.*;
 
 public class StringToData {
 	static int getTime (String s){
@@ -13,7 +16,7 @@ public class StringToData {
 		String temp = "";
 		int time = 0;
 		int n = 0;
-		float x= 0,y = 0,z =0,p = 0,v = 0,e= 0;
+		float x= 0,y = 0,z =0,p = 0,speed = 0,e= 0;
 			if (type != 'l' && type != 'p'){
 				for (int i = 2; i < s.length();i++) {
 					if ((s.charAt(i) != ':')&&(s.charAt(i) !=',')) {
@@ -67,7 +70,7 @@ public class StringToData {
 						m++;
 					}
 					else if (s.charAt(i) == ':' && m == 2){
-						v = Float.parseFloat(temp);
+						speed = Float.parseFloat(temp);
 						temp = "";
 						m++;
 					}
@@ -91,8 +94,8 @@ public class StringToData {
 			case 'g' : data.nb=1; data.time= time; data.g.x = x; data.g.y = y; data.g.z = z; break;
 			case 'a' : data.nb=1; data.time= time; data.a.x = x; data.a.y = y; data.a.z = z; break;
 			case 'm' : data.nb=1; data.time= time; data.m.x = x; data.m.y = y; data.m.z = z; break;
-			case 'o' : data.nb=1; data.time= time; data.o.azi = x; data.o.pitch = y; data.o.roll = z; break;
-			case 'l' : data.nb=1; data.time= time; data.l.lat = x; data.l.lon = y; data.l.atti = z; data.l.v = v; data.l.err = e; break;
+			case 'o' : data.nb=1; data.time= time; data.o.azimuth = x; data.o.pitch = y; data.o.roll = z; break;
+			case 'l' : data.nb=1; data.time= time; data.l.lat = x; data.l.lon = y; data.l.alt = z; data.l.speed = speed; data.l.accuracy = e; break;
 			case 'p' : data.nb=1; data.time= time; data.p = p; break;
 			}
 		}
@@ -101,9 +104,9 @@ public class StringToData {
 			case 'g' : data.g.x = (data.g.x*data.nb +x)/(data.nb +1); data.g.y = (data.g.y*data.nb +y)/(data.nb +1); data.g.z = (data.g.z*data.nb +z)/(data.nb +1); data.nb+=1; break;
 			case 'a' : data.a.x = (data.a.x*data.nb +x)/(data.nb +1); data.a.y = (data.a.y*data.nb +y)/(data.nb +1); data.a.z = (data.a.z*data.nb +z)/(data.nb +1); data.nb+=1; break;
 			case 'm' : data.m.x = (data.m.x*data.nb +x)/(data.nb +1); data.m.y = (data.m.y*data.nb +y)/(data.nb +1); data.m.z = (data.m.z*data.nb +z)/(data.nb +1); data.nb+=1; break;
-			case 'o' : data.o.azi = (data.o.azi*data.nb +x)/(data.nb +1); data.o.pitch = (data.o.pitch*data.nb +y)/(data.nb +1); data.o.roll = (data.o.roll*data.nb +z)/(data.nb +1); data.nb+=1; break;
-			case 'l' : data.l.lat = (data.l.lat*data.nb +x)/(data.nb +1); data.l.lon = (data.l.lon*data.nb +y)/(data.nb +1); data.l.atti = (data.l.atti*data.nb +z)/(data.nb +1);
-				data.l.v = (data.l.v*data.nb +v)/(data.nb +1); data.l.err = (data.l.err*data.nb +e)/(data.nb +1); data.nb+=1; break;
+			case 'o' : data.o.azimuth = (data.o.azimuth*data.nb +x)/(data.nb +1); data.o.pitch = (data.o.pitch*data.nb +y)/(data.nb +1); data.o.roll = (data.o.roll*data.nb +z)/(data.nb +1); data.nb+=1; break;
+			case 'l' : data.l.lat = (data.l.lat*data.nb +x)/(data.nb +1); data.l.lon = (data.l.lon*data.nb +y)/(data.nb +1); data.l.alt = (data.l.alt*data.nb +z)/(data.nb +1);
+				data.l.speed = (data.l.speed*data.nb +speed)/(data.nb +1); data.l.accuracy = (data.l.accuracy*data.nb +e)/(data.nb +1); data.nb+=1; break;
 			case 'p' : data.p = (data.p*data.nb +p)/(data.nb +1); data.nb+=1; break;
 			}
 		}
