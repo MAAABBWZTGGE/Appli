@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name="psc.smartdrone.MainActivity"
+            android:name="psc.smartdrone.android.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +27,7 @@
         </activity>
         
         <activity
-            android:name="psc.smartdrone.SensorActivity"
+            android:name="psc.smartdrone.android.SensorActivity"
             android:label="@string/sensor_activity" >
             <intent-filter>
                 <action android:name="android.intent.action.ANY_NAME" />
@@ -36,7 +36,7 @@
         </activity>
         
         <activity
-            android:name="psc.smartdrone.FlyActivity"
+            android:name="psc.smartdrone.android.FlyActivity"
             android:label="@string/fly_activity" >
             <intent-filter>
                 <action android:name="android.intent.action.ANY_NAME" />
@@ -45,7 +45,7 @@
         </activity>
         
         <service
-            android:name="psc.smartdrone.FlyService" >
+            android:name="psc.smartdrone.android.FlyService" >
         </service>
             
         
