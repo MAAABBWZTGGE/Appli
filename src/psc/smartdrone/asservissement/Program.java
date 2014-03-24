@@ -165,7 +165,8 @@ public class Program {
 		else
 			value = Math.min(Math.max(value, 0), 1);
 		
-		sim.setAxis(axis, value);
+		//TODO set axis
+		//sim.setAxis(axis, value);
 		//TODO assign correct axis
 	}
 
