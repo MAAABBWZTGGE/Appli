@@ -103,17 +103,17 @@ public class IOIOThread extends Thread {
 	}
 	
 	protected float duty_cycle(double c, boolean is_gaz) {
-		if(c > 1.0){
+		if (c > 1.0)
 			c = 1.0;
-		}
-		if(is_gaz && c < 0.0){
+		
+		if (is_gaz && c < 0.0)
 			c = 0.0;
-		} else if(c < -1.0) {
-			c= -1.0;
-		}
-		if(is_gaz) {
+		else if(c < -1.0)
+			c = -1.0;
+
+		if (is_gaz)
 			return (float) ((c + 1.0) / 10.0);
-		}
+
 		return (float) ((c + 3.0) / 20.0);
 	}
 
@@ -123,9 +123,8 @@ public class IOIOThread extends Thread {
 		super.run();
 		while (true) {
 			synchronized (this) {
-				if (abort_) {
+				if (abort_)
 					break;
-				}
 				ioio_ = IOIOFactory.create();
 			}
 			try {
@@ -143,6 +142,7 @@ public class IOIOThread extends Thread {
 				radio_roulis = ioio_.openPulseInput(new Spec(7), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 				radio_tangage = ioio_.openPulseInput(new Spec(8), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 				battery_voltage = ioio_.openAnalogInput(9);
+				
 				while (true) {
 					//doing the job
 					//Output
@@ -192,9 +192,8 @@ public class IOIOThread extends Thread {
 	synchronized public void abort() {
 		Log.d(LOG_ID, "Aborted.");
 		abort_ = true;
-		if (ioio_ != null) {
+		if (ioio_ != null)
 			ioio_.disconnect();
-		}
 	}
 
 }

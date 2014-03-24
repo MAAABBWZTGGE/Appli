@@ -80,11 +80,10 @@ public class SimInterface {
 	}*/
 
 	public SimInterface(IOIOThread _ioio) {
-		if(_ioio != null) {
+		if (_ioio != null)
 			ioio = _ioio;
-		} else {
+		else
 			Log.e("SimInterface", "IOIO is null");
-		}
 		
 		//sdll = SimDLL.INSTANCE;
 		resetAxis();
@@ -114,9 +113,8 @@ public class SimInterface {
 	}
 
 	public void resetAxis() {
-		for(Channel c : Channel.values()) {
+		for(Channel c : Channel.values())
 			setAxis(c, 0);
-		}
 	}
 
 	public double getCoord(int axis) {
