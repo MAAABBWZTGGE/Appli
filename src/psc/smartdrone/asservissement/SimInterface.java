@@ -1,4 +1,4 @@
-package psc.smartdrone;
+package psc.smartdrone.asservissement;
 
 import java.io.BufferedReader;
 import java.io.File;

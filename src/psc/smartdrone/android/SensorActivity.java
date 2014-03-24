@@ -1,4 +1,4 @@
-package psc.smartdrone;
+package psc.smartdrone.android;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,6 +13,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.app.Activity;
 import android.content.Context;
+
+import psc.smartdrone.R;
 
 /**
  * Activity to test sensors.

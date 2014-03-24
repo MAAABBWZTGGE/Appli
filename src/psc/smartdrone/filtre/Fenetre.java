@@ -1,5 +1,6 @@
-import javax.swing.JFrame;
+package psc.smartdrone.filtre;
 
+import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
 	public Fenetre() {

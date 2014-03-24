@@ -1,4 +1,4 @@
-package psc.smartdrone;
+package psc.smartdrone.android;
 
 import java.io.IOException;
 import java.io.OutputStream;

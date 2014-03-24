@@ -1,4 +1,4 @@
-package psc.smartdrone;
+package psc.smartdrone.asservissement;
 
 public class Vector3 {
 	double x;

@@ -1,4 +1,4 @@
-package psc.smartdrone;
+package psc.smartdrone.android;
 
 import java.io.File;
 import java.io.FileWriter;

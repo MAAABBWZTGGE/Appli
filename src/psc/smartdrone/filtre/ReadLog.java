@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Vector;
 
-import psc.smartdrone.DataSender;
+import psc.smartdrone.android.DataSender;
 import psc.smartdrone.sensor.*;
 
 public class ReadLog {

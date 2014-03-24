@@ -1,21 +1,27 @@
+package psc.smartdrone.filtre;
 
 public class Filtre {
 	int N;
 	double[] input,result;
+	
 	public static void DFT(double[] input, double[]rDFT, double[] iDFT) {
 		int N = input.length;
+		
 		for (int f = 0; f < N/2; f++) {
 			rDFT[f] = 0;
 			iDFT[f] = 0;
+			
 			for (int i = 0; i < N; i++) {
 				double w = 2*Math.PI*(double) i/N;
 				rDFT[f] += input[i]*Math.cos(f*w);
 				iDFT[f] += input[i]*Math.sin(f*w);
 			}
+			
 			rDFT[f] /= N/2;
 			iDFT[f] /= N/2;
 		}
 	}
+	
 	public static void invDFT(double[] output, double[]rDFT, double[] iDFT) {
 		int N = output.length;
 		for (int i = 0; i < N; i++) {
@@ -26,6 +32,7 @@ public class Filtre {
 			}
 		}
 	}
+	
 	public static void initFiltreRC(double[] ReFil, double[] ImFil, double rc, int N) {
 		for (int f = 0; f< N/2; f++) {
 			double w = 2*Math.PI*f;
@@ -37,6 +44,7 @@ public class Filtre {
 			ImFil[f] = imag*gain;
 		}
 	}
+	
 	public static void filtrer(double[] input, double rc, double [] output){
 		int N = input.length;
 		 
@@ -50,6 +58,7 @@ public class Filtre {
 		 
 		double[] ReOutput = new double[N/2];
 		double[] ImOutput = new double[N/2];
+		
 		for(int f=0;f<N/2;f++) {
 			ReOutput[f]=ReSig[f]*ReFil[f]-ImSig[f]*ImFil[f];
 			ImOutput[f]=ReSig[f]*ImFil[f]+ImSig[f]*ReFil[f];

@@ -1,9 +1,11 @@
-package psc.smartdrone;
+package psc.smartdrone.android;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import psc.smartdrone.R;
 
 /**
  * Main activity

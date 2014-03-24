@@ -1,3 +1,5 @@
+package psc.smartdrone.filtre;
+
 import java.awt.Graphics;
 import java.awt.Color;
 import javax.swing.JPanel;

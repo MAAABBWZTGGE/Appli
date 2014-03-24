@@ -1,4 +1,4 @@
-package psc.smartdrone;
+package psc.smartdrone.android;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import psc.smartdrone.R;
 
 /**
  * Form to get the IP address to which we send packets.

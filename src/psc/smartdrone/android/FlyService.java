@@ -1,4 +1,4 @@
-package psc.smartdrone;
+package psc.smartdrone.android;
 
 import android.app.Service;
 import android.content.Intent;

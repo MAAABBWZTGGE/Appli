@@ -1,4 +1,4 @@
-package psc.smartdrone;
+package psc.smartdrone.asservissement;
 
 import psc.smartdrone.ioio.Channel;
 
