@@ -1,3 +1,4 @@
+/*
 package psc.smartdrone.filtre;
 
 import java.awt.Graphics;
@@ -19,3 +20,4 @@ public class Panneau extends JPanel {
 		}
 	} 
 }
+//*/
