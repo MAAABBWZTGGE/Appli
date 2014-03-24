@@ -1,5 +1,7 @@
 package psc.smartdrone;
 
+import psc.smartdrone.ioio.Channel;
+
 public class Program {
 
 	Cross cross;
@@ -52,7 +54,7 @@ public class Program {
 		ki=50;//182
 		
 		
-		sim.setAxis(3, spd); //mettre moteur a 53%
+		sim.setAxis(Channel.GAZ, spd); //mettre moteur a 53%
 
 	}
 
@@ -103,6 +105,7 @@ public class Program {
 		if (axis!=3) value = Math.min(Math.max(value,-0.5),0.5);
 		else value = Math.min(Math.max(value,0),1);
 		sim.setAxis(axis, value);
+		//TODO assign correct axis
 	}
 
 	public void updateCoords () {

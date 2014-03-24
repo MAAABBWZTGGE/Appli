@@ -9,6 +9,11 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Vector;
 
+import android.util.Log;
+
+import psc.smartdrone.ioio.Channel;
+import psc.smartdrone.ioio.IOIOThread;
+
 //import com.sun.jna.Library;
 //import com.sun.jna.Native;
 
@@ -19,6 +24,7 @@ public class SimInterface {
 	//static KeyDLL kdll;
 	//static WinDLL wdll;
 	//public Tcp tcp;
+	protected IOIOThread ioio;
 	private Vector<String[]> path;
 
 	/*public interface SimDLL extends Library {
@@ -73,12 +79,16 @@ public class SimInterface {
 		double WC_FindWindow(String caption);
 	}*/
 
-	public SimInterface() {
-		//sdll = SimDLL.INSTANCE;
-		for (int k = 0; k < 4; k++) {
-			//sdll.SetAxis(k, 0);
-			//TODO: Initialize all axes to 0
+	public SimInterface(IOIOThread _ioio) {
+		if(_ioio != null) {
+			ioio = _ioio;
+		} else {
+			Log.e("SimInterface", "IOIO is null");
 		}
+		
+		//sdll = SimDLL.INSTANCE;
+		resetAxis();
+
 		//System.out.println("SimDLL LOADED PROPERLY");
 		//pdll = ProgDLL.INSTANCE;
 		//System.out.println("ProgDLL LOADED PROPERLY");
@@ -99,17 +109,13 @@ public class SimInterface {
 		return wdll.WC_DisplayWindow(handle, 5);
 	}*/
 
-	public void setAxis(int axis, double value) {
-		if (axis < 0 || axis > 3) {
-			return;
-		}
-		//sdll.SetAxis(axis, value);
-		//TODO: Fill
+	public void setAxis(Channel axis, double value) {
+		ioio.set_command(axis, value);
 	}
 
 	public void resetAxis() {
-		for (int k = 0; k < 6; k++) {
-			setAxis(k, 0);
+		for(Channel c : Channel.values()) {
+			setAxis(c, 0);
 		}
 	}
 

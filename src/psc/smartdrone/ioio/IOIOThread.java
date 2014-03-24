@@ -16,8 +16,7 @@ import ioio.lib.api.exception.ConnectionLostException;
 public class IOIOThread extends Thread {
 	//TODO: assign correct pin to each channel
 	//TODO: check gaz command
-	
-	enum Channel {GAZ, LACET, TANGAGE, ROULIS};
+
 	
 	public final static String LOG_ID = "IOIOThread";
 	
