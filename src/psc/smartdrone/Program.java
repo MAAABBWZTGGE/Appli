@@ -48,7 +48,7 @@ public class Program {
 		psi = sim.getCoord(5);
 		time = System.currentTimeMillis();
 		dt = 0;
-		rate = 50/1000;
+		rate = 50.0 / 1000.0;
 		kp = 60;
 		kd = 1;
 		ki = 50; //182
@@ -66,7 +66,8 @@ public class Program {
 		updateCoords();
 		if (speed == 0)
 			return;
-		
+
+		/*
 		Vector3 dir = new Vector3(
 				Math.cos((psi+90) * Math.PI / 180),
 				Math.sin((psi+90) * Math.PI / 180),
@@ -75,9 +76,24 @@ public class Program {
 				0,
 				Math.cos((theta+270) * Math.PI / 180),
 				Math.sin((theta+270) * Math.PI / 180));
-		Vector3 hdir = new Vector3(Math.cos((phi+90) * Math.PI / 180),
+		Vector3 hdir = new Vector3(
+				Math.cos((phi+90) * Math.PI / 180),
 				0,
 				Math.sin((phi+90) * Math.PI / 180));
+		/*/
+		Vector3 dir = new Vector3(
+				-Math.sin(psi * Math.PI / 180),
+				Math.cos(psi * Math.PI / 180),
+				0);
+		Vector3 ldir = new Vector3(
+				0,
+				Math.sin(theta * Math.PI / 180),
+				-Math.cos(theta * Math.PI / 180));
+		Vector3 hdir = new Vector3(
+				-Math.sin(phi * Math.PI / 180),
+				0,
+				Math.cos(phi * Math.PI / 180));
+	    //*/
 		
 		
 		//pd(0,dir,new Vector3(-1,0,0),2,kp,kd,ki);
