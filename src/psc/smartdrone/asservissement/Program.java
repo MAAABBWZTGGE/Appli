@@ -165,9 +165,21 @@ public class Program {
 		else
 			value = Math.min(Math.max(value, 0), 1);
 		
-		//TODO set axis
-		//sim.setAxis(axis, value);
-		//TODO assign correct axis
+		switch(axis) {
+		case 0:
+			sim.setAxis(Channel.ROULIS, value);
+			break;
+		case 1:
+			sim.setAxis(Channel.TANGAGE, value);
+			break;
+		case 2:
+			sim.setAxis(Channel.LACET, value);
+			break;
+		case 3:
+			sim.setAxis(Channel.GAZ, value);
+			break;
+		}
+
 	}
 
 	public void updateCoords () {
