@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 /*
  * Service activated during the flight.
@@ -42,6 +43,8 @@ public class FlyService extends Service {
 	public void onDestroy() {
 
 		Log.d("FlyService", "onDestroy()");
+
+		Toast.makeText(getApplicationContext(), "destroyed fly service", Toast.LENGTH_SHORT).show();
 		
 		mSensorListener.close();
 		stopSelf(mStartId);

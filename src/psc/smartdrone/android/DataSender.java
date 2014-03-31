@@ -92,8 +92,17 @@ public class DataSender extends Thread {
     /*
      * Send the first packet of the list over the socket.
      */
+	static int numPaquets = 0;
+	static int numCalls = 0;
+	
     private synchronized void sendPaquet() throws IOException {
 		if (!mPaquets.isEmpty()) {
+			numPaquets += mPaquets.size();
+			++numCalls;
+			if (numCalls % 100 == 0) {
+				Log.d("sendPaquet", "numPaquets = " + mPaquets.size() + ", average = " + (numPaquets / numCalls));
+			}
+			
 	    	// write paquet
 			if (mSocket != null) {
 				OutputStream out = mSocket.getOutputStream();
