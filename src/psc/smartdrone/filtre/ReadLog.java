@@ -58,7 +58,6 @@ public class ReadLog {
 		Filtre.filtrer(filtreRC.input, 0.006, filtreRC.result);
 		for (int i = 0; i< filtreRC.N; i++){
 			System.out.println(filtreRC.result[i]+" "+filtreRC.input[i]);
-			
 		}
 		dataSender.close();
 	}
