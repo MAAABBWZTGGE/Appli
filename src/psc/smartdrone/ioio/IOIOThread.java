@@ -3,7 +3,9 @@ package psc.smartdrone.ioio;
 import android.os.Handler;
 import android.util.Log;
 import ioio.lib.api.AnalogInput;
+import ioio.lib.api.DigitalInput;
 import ioio.lib.api.DigitalInput.Spec;
+import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.IOIOFactory;
 import ioio.lib.api.IOIO;
 import ioio.lib.api.PulseInput;
@@ -24,10 +26,18 @@ public class IOIOThread extends Thread {
 	private boolean abort_ = false;
 	private Handler uiHandler;
 	
+	//Switching
+	private boolean controlling = false; //true if the IOIO has control, false if the receptor controls
+	private PulseInput input_control;
+	private DigitalOutput control_switcher_1;
+	private DigitalOutput control_switcher_2;
+	private DigitalOutput control_switcher_3;
+	private DigitalOutput control_switcher_4;
+	
 	//PWM chosen frequency
 	public final static int freqHz = 100;
 	
-	//Outputs
+	//Outputs	
 	private PwmOutput gaz_;
 	private PwmOutput lacet_;
 	private PwmOutput roulis_;
@@ -43,12 +53,12 @@ public class IOIOThread extends Thread {
 	private PulseInput radio_roulis;
 	private PulseInput radio_tangage;
 	private AnalogInput battery_voltage;
-	private float radio_gaz_value;
-	private float radio_lacet_value;
-	private float radio_roulis_value;
-	private float radio_tangage_value;
-	private float battery_voltage_value;
-	
+	private float radio_gaz_value = 0.f;
+	private float radio_lacet_value = 0.f ;
+	private float radio_roulis_value = 0.f;
+	private float radio_tangage_value = 0.f;
+	private float battery_voltage_value = 0.f;
+
 	/** Helper functions */
 	
 	//Getters & setters for cammands
@@ -133,27 +143,53 @@ public class IOIOThread extends Thread {
 				ioio_.waitForConnect();
 				Log.i(LOG_ID, "Connected.");
 				//Connected, opening ins/outs
-				gaz_ = ioio_.openPwmOutput(1, freqHz);
+				
+				//Radio switch input borne 1   1 high -> 2, 3, 4 low = IOIO control
+				//Switchs out digital 2, 3, 4
+				//PWM IN 6, 7, 10, 11
+				//PWM outs 13, 14, 18
+				
+				//gaz_ = ioio_.openPwmOutput(1, freqHz);
 				lacet_ = ioio_.openPwmOutput(2, freqHz);
 				roulis_ = ioio_.openPwmOutput(3, freqHz);
 				tangage_ = ioio_.openPwmOutput(4, freqHz);
-				radio_gaz = ioio_.openPulseInput(new Spec(5), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-				radio_lacet = ioio_.openPulseInput(new Spec(6), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-				radio_roulis = ioio_.openPulseInput(new Spec(7), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-				radio_tangage = ioio_.openPulseInput(new Spec(8), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-				battery_voltage = ioio_.openAnalogInput(9);
+				
+				input_control = ioio_.openPulseInput(new Spec(1), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+				control_switcher_1 = ioio_.openDigitalOutput(2);
+				control_switcher_2 = ioio_.openDigitalOutput(3);
+				control_switcher_3 = ioio_.openDigitalOutput(4);
+				//control_switcher_4 = ioio_.openDigitalOutput(5);
+				
+				radio_gaz = ioio_.openPulseInput(new Spec(6), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+				radio_lacet = ioio_.openPulseInput(new Spec(7), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+				radio_roulis = ioio_.openPulseInput(new Spec(10), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+				radio_tangage = ioio_.openPulseInput(new Spec(11), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+				//battery_voltage = ioio_.openAnalogInput(9);
 				
 				while (true) {
 					//doing the job
-					//Output
-					gaz_.setDutyCycle(duty_cycle(gaz_command, true));
-					lacet_.setDutyCycle(duty_cycle(lacet_command, false));
-					roulis_.setDutyCycle(duty_cycle(roulis_command, false));
-					tangage_.setDutyCycle(duty_cycle(tangage_command, false));
+					//Switch
+					controlling = input_control.getDuration() > 0.0015;
+					control_switcher_1.write(!controlling);
+					control_switcher_2.write(!controlling);
+					control_switcher_3.write(!controlling);
+					//control_switcher_4.write(!controlling);
+					if(controlling) {
+						//Output
+						//gaz_.setDutyCycle(duty_cycle(gaz_command, true));
+						lacet_.setDutyCycle(duty_cycle(lacet_command, false));
+						roulis_.setDutyCycle(duty_cycle(roulis_command, false));
+						tangage_.setDutyCycle(duty_cycle(tangage_command, false));
+					} else {
+						//gaz_.setDutyCycle(duty_cycle(0, true));
+						lacet_.setDutyCycle(duty_cycle(0, false));
+						roulis_.setDutyCycle(duty_cycle(0, false));
+						tangage_.setDutyCycle(duty_cycle(0, false));
+					}
 					
 					//Input
 					try{
-						battery_voltage_value = true_voltage(battery_voltage.getVoltage());
+						//battery_voltage_value = true_voltage(battery_voltage.getVoltage());
 						radio_gaz_value = command(radio_gaz.getDuration(), true);
 						radio_lacet_value = command(radio_lacet.getDuration(), false);
 						radio_tangage_value = command(radio_tangage.getDuration(), false);
