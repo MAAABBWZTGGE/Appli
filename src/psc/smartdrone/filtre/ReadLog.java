@@ -9,7 +9,7 @@ import java.util.Vector;
 import psc.smartdrone.android.DataSender;
 import psc.smartdrone.sensor.*;
 
-/**test function of the filter
+/**test thread of the filter
  * 
  * @author wei
  *

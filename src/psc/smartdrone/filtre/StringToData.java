@@ -2,6 +2,12 @@ package psc.smartdrone.filtre;
 
 import psc.smartdrone.sensor.*;
 
+/**creat a data vector by reading a .txt file
+ * 
+ * @author wei
+ *
+ */
+
 public class StringToData {
 	static int getTime (String s){
 		int i = 2;

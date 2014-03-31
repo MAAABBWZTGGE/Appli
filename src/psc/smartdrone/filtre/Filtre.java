@@ -1,6 +1,12 @@
 package psc.smartdrone.filtre;
 import psc.smartdrone.sensor.Sensors;
 
+/**Thread of the filter by using a discret Fourier transformation and a RC-filter.
+ * 
+ * @author wei
+ *
+ */
+
 public class Filtre {
 	int N;
 	double[] input,result;

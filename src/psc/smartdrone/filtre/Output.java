@@ -1,6 +1,12 @@
 package psc.smartdrone.filtre;
 import psc.smartdrone.sensor.Sensors;
 
+/**output of the filter, rc the need to be determinated...
+ * 
+ * @author wei
+ *
+ */
+
 public class Output {
 	double rc = 0.005;
 	Sensors sorti = new Sensors(1);
