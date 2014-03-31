@@ -9,6 +9,12 @@ import java.util.Vector;
 import psc.smartdrone.android.DataSender;
 import psc.smartdrone.sensor.*;
 
+/**test function of the filter
+ * 
+ * @author wei
+ *
+ */
+
 public class ReadLog {
 	public static void main (String[] args) {
 		String ipAdress = "127.0.0.1";
@@ -55,7 +61,7 @@ public class ReadLog {
 		filtreRC.input = new double[filtreRC.N];
 		filtreRC.input = signal;
 		filtreRC.result = new double[filtreRC.N];
-		Filtre.filtrer(filtreRC.input, 0.006, filtreRC.result);
+		filtreRC.filtrer(filtreRC.input, 0.006, filtreRC.result);
 		for (int i = 0; i< filtreRC.N; i++){
 			System.out.println(filtreRC.result[i]+" "+filtreRC.input[i]);
 		}
