@@ -1,10 +1,18 @@
 package psc.smartdrone.filtre;
+import psc.smartdrone.sensor.Sensors;
+
+/**Thread of the filter by using a discret Fourier transformation and a RC-filter.
+ * 
+ * @author wei
+ *
+ */
 
 public class Filtre {
 	int N;
 	double[] input,result;
 	
-	public static void DFT(double[] input, double[]rDFT, double[] iDFT) {
+	
+	public void DFT(double[] input, double[]rDFT, double[] iDFT) {
 		int N = input.length;
 		
 		for (int f = 0; f < N/2; f++) {
@@ -22,7 +30,7 @@ public class Filtre {
 		}
 	}
 	
-	public static void invDFT(double[] output, double[]rDFT, double[] iDFT) {
+	public void invDFT(double[] output, double[]rDFT, double[] iDFT) {
 		int N = output.length;
 		for (int i = 0; i < N; i++) {
 			output[i] = 0;
@@ -33,7 +41,7 @@ public class Filtre {
 		}
 	}
 	
-	public static void initFiltreRC(double[] ReFil, double[] ImFil, double rc, int N) {
+	public void initFiltreRC(double[] ReFil, double[] ImFil, double rc, int N) {
 		for (int f = 0; f< N/2; f++) {
 			double w = 2*Math.PI*f;
 			double wrc = w*rc;
@@ -45,12 +53,12 @@ public class Filtre {
 		}
 	}
 	
-	public static void filtrer(double[] input, double rc, double [] output){
+	public void filtrer(double[] input, double rc, double [] output){
 		int N = input.length;
 		 
 		double[] ReFil = new double[N/2];
 		double[] ImFil = new double[N/2];
-		Filtre.initFiltreRC(ReFil, ImFil, rc, N);
+		this.initFiltreRC(ReFil, ImFil, rc, N);
 		 
 		double[] ReSig = new double[N/2];
 		double[] ImSig = new double[N/2];
@@ -66,4 +74,5 @@ public class Filtre {
 		
 		invDFT(output, ReOutput, ImOutput);
 	}
+	
 }
