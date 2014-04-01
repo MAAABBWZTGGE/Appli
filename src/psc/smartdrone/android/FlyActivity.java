@@ -28,9 +28,9 @@ public class FlyActivity extends Activity {
 
 		Button button = (Button)findViewById(R.id.buttonIP);
 		if (mService == null) {
-			button.setText("Démarrer");
+			button.setText("Demarrer");
 		} else {
-			button.setText("Arrêter");
+			button.setText("Arreter");
 		}
 	}
 	
@@ -51,12 +51,12 @@ public class FlyActivity extends Activity {
 			mService.putExtra(IP_MESSAGE, dstIP);
 			startService(mService);
 			
-			button.setText("Arrêter");
+			button.setText("Arreter");
 		} else {
 			stopService(mService);
 			mService = null;
 
-			button.setText("Démarrer");
+			button.setText("Demarrer");
 		}
 	}
 	

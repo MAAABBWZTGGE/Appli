@@ -1,6 +1,12 @@
 package psc.smartdrone.ioio;
 
+import psc.smartdrone.R;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import ioio.lib.api.AnalogInput;
 import ioio.lib.api.DigitalInput;
@@ -13,14 +19,24 @@ import ioio.lib.api.PulseInput.ClockRate;
 import ioio.lib.api.PulseInput.PulseMode;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
+import ioio.lib.util.BaseIOIOLooper;
+import ioio.lib.util.IOIOLooper;
+import ioio.lib.util.android.IOIOService;
 
 
-public class IOIOThread extends Thread {
+public class SimpleIOIOService extends IOIOService {
 	//TODO: assign correct pin to each channel
 	//TODO: check gaz command
 
 	
-	public final static String LOG_ID = "IOIOThread";
+	public final static String LOG_ID = "IOIOService";
+	
+	protected static SimpleIOIOService m_Instance = null;
+	public static SimpleIOIOService getInstance() {
+		return m_Instance;
+	}
+	//PWM chosen frequency
+	public final static int freqHz = 100;
 	
 	private IOIO ioio_;
 	private boolean abort_ = false;
@@ -34,9 +50,6 @@ public class IOIOThread extends Thread {
 	private DigitalOutput control_switcher_3;
 	private DigitalOutput control_switcher_4;
 	
-	//PWM chosen frequency
-	public final static int freqHz = 100;
-	
 	//Outputs	
 	private PwmOutput gaz_;
 	private PwmOutput lacet_;
@@ -46,6 +59,8 @@ public class IOIOThread extends Thread {
 	private double lacet_command = 0.0;
 	private double roulis_command = 0.0;
 	private double tangage_command = 0.0;
+	private DigitalOutput led_;
+
 	
 	//Inputs
 	private PulseInput radio_gaz;
@@ -127,28 +142,18 @@ public class IOIOThread extends Thread {
 		return (float) ((c + 3.0) / 20.0);
 	}
 
-	/** Thread body. */
 	@Override
-	public void run() {
-		super.run();
-		while (true) {
-			synchronized (this) {
-				if (abort_)
-					break;
-				ioio_ = IOIOFactory.create();
-			}
-			try {
-				//Connecting
-				Log.i(LOG_ID, "Connecting...");
-				ioio_.waitForConnect();
-				Log.i(LOG_ID, "Connected.");
-				//Connected, opening ins/outs
-				
+	protected IOIOLooper createIOIOLooper() {
+		return new BaseIOIOLooper() {
+
+			@Override
+			protected void setup() throws ConnectionLostException,
+					InterruptedException {
 				//Radio switch input borne 1   1 high -> 2, 3, 4 low = IOIO control
 				//Switchs out digital 2, 3, 4
 				//PWM IN 6, 7, 10, 11
 				//PWM outs 13, 14, 18
-				
+				led_ = ioio_.openDigitalOutput(IOIO.LED_PIN);
 				//gaz_ = ioio_.openPwmOutput(1, freqHz);
 				lacet_ = ioio_.openPwmOutput(2, freqHz);
 				roulis_ = ioio_.openPwmOutput(3, freqHz);
@@ -165,79 +170,93 @@ public class IOIOThread extends Thread {
 				radio_roulis = ioio_.openPulseInput(new Spec(10), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 				radio_tangage = ioio_.openPulseInput(new Spec(11), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 				//battery_voltage = ioio_.openAnalogInput(9);
-				
-				while (true) {
-					//doing the job
-					//Switch
-					boolean switch_read = input_control.getDuration() > 0.0015;
-					if(controlling != switch_read) {
-						if(switch_read){
-							Log.i(LOG_ID, "Taking control");
-						} else {
-							Log.i(LOG_ID, "Releasing control");
-						}
-					}
-					controlling = switch_read;
-					control_switcher_1.write(!controlling);
-					control_switcher_2.write(!controlling);
-					control_switcher_3.write(!controlling);
-					//control_switcher_4.write(!controlling);
-					if(controlling) {
-						//Output
-						//gaz_.setDutyCycle(duty_cycle(gaz_command, true));
-						lacet_.setDutyCycle(duty_cycle(lacet_command, false));
-						roulis_.setDutyCycle(duty_cycle(roulis_command, false));
-						tangage_.setDutyCycle(duty_cycle(tangage_command, false));
-					} else {
-						//gaz_.setDutyCycle(duty_cycle(0, true));
-						lacet_.setDutyCycle(duty_cycle(0, false));
-						roulis_.setDutyCycle(duty_cycle(0, false));
-						tangage_.setDutyCycle(duty_cycle(0, false));
-					}
-					
-					//Input
-					try{
-						//battery_voltage_value = true_voltage(battery_voltage.getVoltage());
-						radio_gaz_value = command(radio_gaz.getDuration(), true);
-						radio_lacet_value = command(radio_lacet.getDuration(), false);
-						radio_tangage_value = command(radio_tangage.getDuration(), false);
-						radio_roulis_value = command(radio_roulis.getDuration(), false);
-					} catch (InterruptedException e) {
-					}
-					sleep(50);
-				}
-			} catch (ConnectionLostException e) {
-				Log.d(LOG_ID, "Connection lost");
-			} catch (Exception e) {
-				Log.e(LOG_ID, "Unexpected exception caught", e);
-				ioio_.disconnect();
-				break;
-			} finally {
-					if (ioio_ != null) {
-						try {
-							ioio_.waitForDisconnect();
-						} catch (InterruptedException e) {
-						}
-					}
-					synchronized (this) {
-						ioio_ = null;
-					}
 			}
+
+			@Override
+			public void loop() throws ConnectionLostException,
+					InterruptedException {
+				
+				//Led: flashing when app started, fix when controlling
+				if(controlling) {
+					led_.write(true);
+				} else {
+					if(((System.currentTimeMillis() / 500) % 2) == 0) {
+						led_.write(true);
+					} else {
+						led_.write(false);
+					}
+				}
+				
+				//Switch
+				boolean switch_read = input_control.getDuration() > 0.0015;
+				if(controlling != switch_read) {
+					if(switch_read){
+						Log.i(LOG_ID, "Taking control");
+					} else {
+						Log.i(LOG_ID, "Releasing control");
+					}
+				}
+				controlling = switch_read;
+				control_switcher_1.write(!controlling);
+				control_switcher_2.write(!controlling);
+				control_switcher_3.write(!controlling);
+				//control_switcher_4.write(!controlling);
+				if(controlling) {
+					//Output
+					//gaz_.setDutyCycle(duty_cycle(gaz_command, true));
+					lacet_.setDutyCycle(duty_cycle(lacet_command, false));
+					roulis_.setDutyCycle(duty_cycle(roulis_command, false));
+					tangage_.setDutyCycle(duty_cycle(tangage_command, false));
+				} else {
+					//gaz_.setDutyCycle(duty_cycle(0, true));
+					lacet_.setDutyCycle(duty_cycle(0, false));
+					roulis_.setDutyCycle(duty_cycle(0, false));
+					tangage_.setDutyCycle(duty_cycle(0, false));
+				}
+				
+				//Input
+				try{
+					//battery_voltage_value = true_voltage(battery_voltage.getVoltage());
+					radio_gaz_value = command(radio_gaz.getDuration(), true);
+					radio_lacet_value = command(radio_lacet.getDuration(), false);
+					radio_tangage_value = command(radio_tangage.getDuration(), false);
+					radio_roulis_value = command(radio_roulis.getDuration(), false);
+				} catch (InterruptedException e) {
+				}
+				Thread.sleep(50);
+			}
+		};
+	}
+	
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		m_Instance = this;
+		Log.d(LOG_ID, "onStart()");
+		super.onStart(intent, startId);
+		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		if (intent != null && intent.getAction() != null
+				&& intent.getAction().equals("stop")) {
+			// User clicked the notification. Need to stop the service.
+			nm.cancel(0);
+			stopSelf();
+		} else {
+			// Service starting. Create a notification.
+			Notification notification = new Notification(
+					R.drawable.ic_launcher, "IOIO service running",
+					System.currentTimeMillis());
+			notification
+					.setLatestEventInfo(this, "IOIO Service", "Click to stop",
+							PendingIntent.getService(this, 0, new Intent(
+									"stop", null, this, this.getClass()), 0));
+			notification.flags |= Notification.FLAG_ONGOING_EVENT;
+			nm.notify(0, notification);
 		}
+		return START_REDELIVER_INTENT;
 	}
 
-	/**
-	 * Abort the connection.
-	 * 
-	 * This is a little tricky synchronization-wise: we need to be handle
-	 * the case of abortion happening before the IOIO instance is created or
-	 * during its creation.
-	 */
-	synchronized public void abort() {
-		Log.d(LOG_ID, "Aborted.");
-		abort_ = true;
-		if (ioio_ != null)
-			ioio_.disconnect();
+	@Override
+	public IBinder onBind(Intent intent) {
+		return null;
 	}
 
 }

@@ -12,7 +12,7 @@ import java.util.Vector;
 import android.util.Log;
 
 import psc.smartdrone.ioio.Channel;
-import psc.smartdrone.ioio.IOIOThread;
+import psc.smartdrone.ioio.SimpleIOIOService;
 
 //import com.sun.jna.Library;
 //import com.sun.jna.Native;
@@ -24,7 +24,7 @@ public class SimInterface {
 	//static KeyDLL kdll;
 	//static WinDLL wdll;
 	//public Tcp tcp;
-	protected IOIOThread ioio;
+	protected SimpleIOIOService ioio;
 	private Vector<String[]> path;
 
 	/*public interface SimDLL extends Library {
@@ -79,7 +79,7 @@ public class SimInterface {
 		double WC_FindWindow(String caption);
 	}*/
 
-	public SimInterface(IOIOThread _ioio) {
+	public SimInterface(SimpleIOIOService _ioio) {
 		if (_ioio != null)
 			ioio = _ioio;
 		else

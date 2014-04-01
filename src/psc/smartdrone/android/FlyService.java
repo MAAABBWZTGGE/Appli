@@ -1,7 +1,7 @@
 package psc.smartdrone.android;
 
 import psc.smartdrone.asservissement.SimInterface;
-import psc.smartdrone.ioio.IOIOThread;
+import psc.smartdrone.ioio.SimpleIOIOService;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -14,7 +14,6 @@ import android.widget.Toast;
 public class FlyService extends Service {
 
 	private SensorListener mSensorListener;
-	private IOIOThread mIoio;
 	private SimInterface mInterface;
 	private int mStartId;
 
@@ -27,6 +26,8 @@ public class FlyService extends Service {
 
 		Log.d("FlyService", "onStartCommand()");
 		
+		startService(new Intent(this, SimpleIOIOService.class));
+		
 		String dstIP = intent.getStringExtra(FlyActivity.IP_MESSAGE);
 
 		mStartId = startId;
@@ -34,11 +35,13 @@ public class FlyService extends Service {
 		//mSensorListener = new SensorListener(this, new DataSender("10.70.22.234", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.44.204", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
-		mSensorListener.start();
-		
-		mIoio = new IOIOThread();
-		mInterface = new SimInterface(mIoio);
-		mIoio.start();
+		//mSensorListener.start();
+		try {
+			//while(SimpleIOIOService.getInstance() == null)
+				Thread.sleep(100);
+		} catch (InterruptedException e) {
+		}
+		//mInterface = new SimInterface(SimpleIOIOService.getInstance());
 		
 		return START_REDELIVER_INTENT;
 	}
@@ -54,10 +57,7 @@ public class FlyService extends Service {
 
 		Toast.makeText(getApplicationContext(), "destroyed fly service", Toast.LENGTH_SHORT).show();
 		
-		mSensorListener.close();
-		
-		mIoio.abort();
-		
+		mSensorListener.close();		
 		stopSelf(mStartId);
 	}
 
@@ -65,7 +65,6 @@ public class FlyService extends Service {
 	public IBinder onBind(Intent intent) {
 
 		Log.d("FlyService", "onBind()");
-		
 		// TODO Auto-generated method stub
 		return null;
 	}
