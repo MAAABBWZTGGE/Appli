@@ -169,7 +169,15 @@ public class IOIOThread extends Thread {
 				while (true) {
 					//doing the job
 					//Switch
-					controlling = input_control.getDuration() > 0.0015;
+					boolean switch_read = input_control.getDuration() > 0.0015;
+					if(controlling != switch_read) {
+						if(switch_read){
+							Log.i(LOG_ID, "Taking control");
+						} else {
+							Log.i(LOG_ID, "Releasing control");
+						}
+					}
+					controlling = switch_read;
 					control_switcher_1.write(!controlling);
 					control_switcher_2.write(!controlling);
 					control_switcher_3.write(!controlling);
@@ -196,7 +204,7 @@ public class IOIOThread extends Thread {
 						radio_roulis_value = command(radio_roulis.getDuration(), false);
 					} catch (InterruptedException e) {
 					}
-					sleep(20);
+					sleep(50);
 				}
 			} catch (ConnectionLostException e) {
 				Log.d(LOG_ID, "Connection lost");
