@@ -1,5 +1,7 @@
 package psc.smartdrone.android;
 
+import psc.smartdrone.asservissement.SimInterface;
+import psc.smartdrone.ioio.IOIOThread;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -12,6 +14,8 @@ import android.widget.Toast;
 public class FlyService extends Service {
 
 	private SensorListener mSensorListener;
+	private IOIOThread mIoio;
+	private SimInterface mInterface;
 	private int mStartId;
 
 	/*
@@ -32,6 +36,10 @@ public class FlyService extends Service {
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
 		mSensorListener.start();
 		
+		mIoio = new IOIOThread();
+		mInterface = new SimInterface(mIoio);
+		mIoio.start();
+		
 		return START_REDELIVER_INTENT;
 	}
 
@@ -47,6 +55,9 @@ public class FlyService extends Service {
 		Toast.makeText(getApplicationContext(), "destroyed fly service", Toast.LENGTH_SHORT).show();
 		
 		mSensorListener.close();
+		
+		mIoio.abort();
+		
 		stopSelf(mStartId);
 	}
 
