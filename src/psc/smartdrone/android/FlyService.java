@@ -1,8 +1,9 @@
 package psc.smartdrone.android;
 
+import ioio.lib.util.IOIOLooper;
+import ioio.lib.util.android.IOIOService;
 import psc.smartdrone.asservissement.SimInterface;
-import psc.smartdrone.ioio.SimpleIOIOService;
-import android.app.Service;
+import psc.smartdrone.ioio.IOIOController;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
@@ -11,7 +12,7 @@ import android.widget.Toast;
 /*
  * Service activated during the flight.
  */
-public class FlyService extends Service {
+public class FlyService extends IOIOService {
 
 	private SensorListener mSensorListener;
 	private SimInterface mInterface;
@@ -23,29 +24,27 @@ public class FlyService extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
+		super.onStartCommand(intent, flags, startId);
 		Log.d("FlyService", "onStartCommand()");
-		
-		startService(new Intent(this, SimpleIOIOService.class));
-		
+				
 		String dstIP = intent.getStringExtra(FlyActivity.IP_MESSAGE);
 
 		mStartId = startId;
-		mSensorListener = new SensorListener(this, new DataSender(dstIP, 6157), "/storage/sdcard0/Documents/Logs/");
+		//mSensorListener = new SensorListener(this, new DataSender(dstIP, 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("10.70.22.234", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.44.204", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener.start();
-		try {
-			//while(SimpleIOIOService.getInstance() == null)
-				Thread.sleep(100);
-		} catch (InterruptedException e) {
-		}
+		
 		//mInterface = new SimInterface(SimpleIOIOService.getInstance());
 		
 		return START_REDELIVER_INTENT;
 	}
 
+	public void onStart(Intent intent, int startId) {
+		super.onStart(intent, startId);
+	}
+	
 	/*
 	 * Stop the service.
 	 * @see android.app.Service#onDestroy()
@@ -65,8 +64,15 @@ public class FlyService extends Service {
 	public IBinder onBind(Intent intent) {
 
 		Log.d("FlyService", "onBind()");
-		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	protected IOIOLooper createIOIOLooper() {
+		Toast.makeText(this, "Looper asked", Toast.LENGTH_LONG).show();
+		IOIOController i = new IOIOController();
+		i.context = this;
+		return i;
 	}
 
 }
