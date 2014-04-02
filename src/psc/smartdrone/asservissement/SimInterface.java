@@ -9,101 +9,24 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Vector;
 
-import android.util.Log;
-
 import psc.smartdrone.ioio.Channel;
+import psc.smartdrone.ioio.IOIOController;
 
-//import com.sun.jna.Library;
-//import com.sun.jna.Native;
 
 /** Simple example of native library declaration and usage. */
 public class SimInterface {
-	//static SimDLL sdll;
-	//static ProgDLL pdll;
-	//static KeyDLL kdll;
-	//static WinDLL wdll;
-	//public Tcp tcp;
 	private Vector<String[]> path;
-
-	/*public interface SimDLL extends Library {
-		SimDLL INSTANCE = (SimDLL) Native.loadLibrary(
-				System.getProperty("user.dir") + "\\dll\\CRRCsimdata.dll",
-				SimDLL.class);
-
-		double GetPlaneX();
-
-		double GetPlaneY();
-
-		double GetPlaneZ();
-
-		double GetPlanePhi();
-
-		double GetPlaneTheta();
-
-		double GetPlanePsi();
-
-		double SetAxis(double axis, double value);
-	}*/
-
-	/*public interface ProgDLL extends Library {
-		ProgDLL INSTANCE = (ProgDLL) Native.loadLibrary(
-				System.getProperty("user.dir") + "\\dll\\ExecuteEx.dll",
-				ProgDLL.class);
-
-		double execute_ex_set_directory(String dir);
-
-		double execute_ex_set_showmode(double mode);
-
-		double execute_program_ex(String prog, String args, double mode);
-	}*/
-
-	/*public interface KeyDLL extends Library {
-		KeyDLL INSTANCE = (KeyDLL) Native.loadLibrary(
-				System.getProperty("user.dir") + "\\dll\\SendKeys.dll",
-				KeyDLL.class);
-
-		double DLLSendKeys(String key, double wait);
-
-		double DLLAppActivate(String caption);
-	}*/
-
-	/*public interface WinDLL extends Library {
-		WinDLL INSTANCE = (WinDLL) Native.loadLibrary(
-				System.getProperty("user.dir") + "\\dll\\WindowControl.dll",
-				WinDLL.class);
-
-		double WC_DisplayWindow(double handle, double fnct);
-
-		double WC_FindWindow(String caption);
-	}*/
-
-	public SimInterface() {
-		
-		//sdll = SimDLL.INSTANCE;
+	private IOIOController mPlane;
+	
+	public SimInterface(IOIOController c) {
 		resetAxis();
-
-		//System.out.println("SimDLL LOADED PROPERLY");
-		//pdll = ProgDLL.INSTANCE;
-		//System.out.println("ProgDLL LOADED PROPERLY");
-		//kdll = KeyDLL.INSTANCE;
-		//System.out.println("KeyDLL LOADED PROPERLY");
-		//wdll = WinDLL.INSTANCE;
-		//System.out.println("WinDLL LOADED PROPERLY");
-		//tcp = new Tcp();
-		//System.out.println("COM INITIALIZED");
-
+		mPlane = c;
 	}
 
-	/*public double findHandle(String caption) {
-		return wdll.WC_FindWindow(caption);
-	}*/
-
-	/*public double showWindows(double handle) {
-		return wdll.WC_DisplayWindow(handle, 5);
-	}*/
-
 	public void setAxis(Channel axis, double value) {
-		//ioio.set_command(axis, value);
+		if(mPlane != null) {
+			mPlane.set_command(axis, value);
+		}
 	}
 
 	public void resetAxis() {
@@ -112,7 +35,7 @@ public class SimInterface {
 	}
 
 	public double getCoord(int axis) {
-		//TODO: Fill
+		//TODO: Fill. Must take coords from the output of the filter
 		switch (axis) {
 		case 0:
 			//return sdll.GetPlaneX();
@@ -131,39 +54,8 @@ public class SimInterface {
 		}
 	}
 
-	/*public void setDirectory(String dir) {
-		pdll.execute_ex_set_directory(dir);
-	}*/
-
-	/*public double executeProgram(String prog) {
-		return pdll.execute_program_ex(prog, "", 0);
-	}*/
-
-	/*public void setShowMode(int mode) {
-		pdll.execute_ex_set_showmode(mode);
-	}*/
-
-	/*public double sendKey(String key, double wait) {
-		return kdll.DLLSendKeys(key, wait);
-	}*/
-
-	/*public boolean activate(String caption) {
-		int maxTime = 100;
-		double test = kdll.DLLAppActivate(caption);
-		while (test < 1 && maxTime > 0) {
-			test = kdll.DLLAppActivate(caption);
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			maxTime -= 10;
-		}
-		return !(test < 1);
-	}*/
-
 	public boolean loadPath(String fname) {
-		//TODO: Adapt
+		//TODO: Adapt path
 		BufferedReader reader;
 		File f = new File(System.getProperty("user.dir") + "\\tools\\paths\\"
 				+ fname);

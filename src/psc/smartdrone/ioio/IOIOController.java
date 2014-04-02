@@ -1,9 +1,6 @@
 package psc.smartdrone.ioio;
 
 
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 import ioio.lib.api.AnalogInput;
 import ioio.lib.api.DigitalInput.Spec;
 import ioio.lib.api.DigitalOutput;
@@ -56,15 +53,9 @@ public class IOIOController extends BaseIOIOLooper {
 	private float radio_roulis_value = 0.f;
 	private float radio_tangage_value = 0.f;
 	private float battery_voltage_value = 0.f;
+
 	
-	//Misc.
-	public Context context;
-	
-	/** Constructor */
-	/*public IOIOController(Context ctx) {
-		super();
-		context = ctx;
-	}*/
+
 
 	/** Helper functions */
 	
@@ -136,18 +127,16 @@ public class IOIOController extends BaseIOIOLooper {
 
 	@Override
 	protected void setup() throws ConnectionLostException, InterruptedException {
-		Log.d(LOG_ID, "setup");
-		Toast.makeText(context, "setup", Toast.LENGTH_LONG).show();
 		//Radio switch input borne 1   1 high -> 2, 3, 4 low = IOIO control
 		//Switchs out digital 2, 3, 4
 		//PWM IN 6, 7, 10, 11
 		//PWM outs 13, 14, 18
 		led_ = ioio_.openDigitalOutput(IOIO.LED_PIN);
-		/*//gaz_ = ioio_.openPwmOutput(1, freqHz);
-		lacet_ = ioio_.openPwmOutput(13, freqHz);
+		//gaz_ = ioio_.openPwmOutput(1, freqHz);
+		/*lacet_ = ioio_.openPwmOutput(13, freqHz);
 		roulis_ = ioio_.openPwmOutput(14, freqHz);
 		tangage_ = ioio_.openPwmOutput(18, freqHz);
-		
+		*/
 		input_control = ioio_.openPulseInput(new Spec(1), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 		control_switcher_1 = ioio_.openDigitalOutput(2);
 		control_switcher_2 = ioio_.openDigitalOutput(3);
@@ -162,10 +151,7 @@ public class IOIOController extends BaseIOIOLooper {
 	}
 
 	@Override
-	public void loop() throws ConnectionLostException, InterruptedException {
-		
-		Log.d(LOG_ID, "looping :)");
-		
+	public void loop() throws ConnectionLostException, InterruptedException {		
 		//Led: flashing when app started, fix when controlling
 		//if(controlling) {
 		//	led_.write(false);
@@ -209,7 +195,6 @@ public class IOIOController extends BaseIOIOLooper {
 			radio_roulis_value = command(radio_roulis.getDuration(), false);
 		} catch (InterruptedException e) {
 		}*/
-		Thread.sleep(50);
 	}
 	
 }

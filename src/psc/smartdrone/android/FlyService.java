@@ -17,6 +17,7 @@ public class FlyService extends IOIOService {
 	private SensorListener mSensorListener;
 	private SimInterface mInterface;
 	private int mStartId;
+	private IOIOController mController;
 
 	/*
 	 * Start a new thread for monitoring events.
@@ -36,7 +37,6 @@ public class FlyService extends IOIOService {
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener.start();
 		
-		//mInterface = new SimInterface(SimpleIOIOService.getInstance());
 		
 		return START_REDELIVER_INTENT;
 	}
@@ -69,10 +69,11 @@ public class FlyService extends IOIOService {
 	
 	@Override
 	protected IOIOLooper createIOIOLooper() {
-		Toast.makeText(this, "Looper asked", Toast.LENGTH_LONG).show();
-		IOIOController i = new IOIOController();
-		i.context = this;
-		return i;
+		if(mController == null) {
+			mController = new IOIOController();
+			mInterface = new SimInterface(mController);
+		}
+		return mController;
 	}
 
 }
