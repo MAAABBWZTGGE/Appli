@@ -138,7 +138,7 @@ public class IOIOController extends BaseIOIOLooper {
 		tangage_ = ioio_.openPwmOutput(18, freqHz);
 		*/
 		input_control = ioio_.openPulseInput(new Spec(1), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-		control_switcher_1 = ioio_.openDigitalOutput(2);
+		/*control_switcher_1 = ioio_.openDigitalOutput(2);
 		control_switcher_2 = ioio_.openDigitalOutput(3);
 		control_switcher_3 = ioio_.openDigitalOutput(4);
 		//control_switcher_4 = ioio_.openDigitalOutput(5);
@@ -156,10 +156,15 @@ public class IOIOController extends BaseIOIOLooper {
 		//if(controlling) {
 		//	led_.write(false);
 		//} else {
-			if(((System.currentTimeMillis() / 500) % 2) == 0) {
-				led_.write(false);
+		boolean switch_read = input_control.getDuration() > 0.0015;
+			if(switch_read) {
+				led_.write(false); //Light up
 			} else {
-				led_.write(true);
+				if((System.currentTimeMillis() / 200) % 2 == 0) {
+					led_.write(true);
+				} else {
+					led_.write(false);
+				}
 			}
 		//}
 		
@@ -186,15 +191,17 @@ public class IOIOController extends BaseIOIOLooper {
 			roulis_.setDutyCycle(duty_cycle(roulis_command, false));
 			tangage_.setDutyCycle(duty_cycle(tangage_command, false));
 		} 
-		//Input
+		//Input*/
 		try{
 			//battery_voltage_value = true_voltage(battery_voltage.getVoltage());
-			radio_gaz_value = command(radio_gaz.getDuration(), true);
-			radio_lacet_value = command(radio_lacet.getDuration(), false);
-			radio_tangage_value = command(radio_tangage.getDuration(), false);
-			radio_roulis_value = command(radio_roulis.getDuration(), false);
+			//radio_gaz_value = command(radio_gaz.getDuration(), true);
+			//radio_lacet_value = command(radio_lacet.getDuration(), false);
+			//radio_tangage_value = command(radio_tangage.getDuration(), false);
+			//radio_roulis_value = command(radio_roulis.getDuration(), false);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
-		}*/
+		}
+			
 	}
 	
 }
