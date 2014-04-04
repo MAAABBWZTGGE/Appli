@@ -153,33 +153,19 @@ public class IOIOController extends BaseIOIOLooper {
 	@Override
 	public void loop() throws ConnectionLostException, InterruptedException {		
 		//Led: flashing when app started, fix when controlling
-		//if(controlling) {
-		//	led_.write(false);
-		//} else {
-		boolean switch_read = input_control.getDuration() > 0.0015;
-			if(switch_read) {
-				led_.write(false); //Light up
-			} else {
-				if((System.currentTimeMillis() / 200) % 2 == 0) {
-					led_.write(true);
-				} else {
-					led_.write(false);
-				}
-			}
-		//}
 		
-		/*//Switch
-		boolean switch_read = input_control.getDuration() > 0.0015;
-		if(controlling != switch_read) {
-			if(switch_read){
-				Log.i(LOG_ID, "Taking control");
-				Toast.makeText(context, "Taking control", Toast.LENGTH_SHORT).show();
+		controlling = input_control.getDuration() > 0.0015;
+		if(controlling) {
+			led_.write(false); //Light up
+		} else {
+			if((System.currentTimeMillis() / 200) % 2 == 0) {
+				led_.write(true);
 			} else {
-				Log.i(LOG_ID, "Releasing control");
-				Toast.makeText(context, "Releasing control", Toast.LENGTH_SHORT).show();
+				led_.write(false);
 			}
 		}
-		controlling = switch_read;
+		
+		/*//Switch
 		control_switcher_1.write(!controlling);
 		control_switcher_2.write(!controlling);
 		control_switcher_3.write(!controlling);
