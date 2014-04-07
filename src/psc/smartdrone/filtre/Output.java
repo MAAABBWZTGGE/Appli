@@ -9,7 +9,7 @@ import psc.smartdrone.sensor.Sensors;
 
 public class Output {
 	double rc = 0.005;
-	Sensors sorti = new Sensors(1);
+	Sensors sortie = new Sensors(1);
 	
 	void sensorToInput(int i,double[] input, Sensors s){
 		switch (i){
@@ -71,82 +71,82 @@ public class Output {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.a[0].x= (float) sum;
+				sortie.a[0].x= (float) sum;
 		case 1:	for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.a[0].y= (float) sum;
+				sortie.a[0].y= (float) sum;
 		case 2: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.a[0].z= (float) sum;
+				sortie.a[0].z= (float) sum;
 		case 3: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.g[0].x= (float) sum;
+				sortie.g[0].x= (float) sum;
 		case 4: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.g[0].y= (float) sum;
+				sortie.g[0].y= (float) sum;
 		case 5: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.g[0].z= (float) sum;
+				sortie.g[0].z= (float) sum;
 		case 6: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}	
 				sum/=result.length;
-				sorti.m[0].x= (float) sum;
+				sortie.m[0].x= (float) sum;
 		case 7: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.m[0].y= (float) sum;
+				sortie.m[0].y= (float) sum;
 		case 8: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.m[0].z= (float) sum;
+				sortie.m[0].z= (float) sum;
 		case 9: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.o[0].azimuth= (float) sum;
+				sortie.o[0].azimuth= (float) sum;
 		case 10: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.o[0].pitch= (float) sum;
+				sortie.o[0].pitch= (float) sum;
 		case 11: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.o[0].roll= (float) sum;
+				sortie.o[0].roll= (float) sum;
 		case 12: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.l[0].alt= (float) sum;
+				sortie.l[0].alt= (float) sum;
 		case 13: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.l[0].lat= (float) sum;
+				sortie.l[0].lat= (float) sum;
 		case 14: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.l[0].lon= (float) sum;
+				sortie.l[0].lon= (float) sum;
 		case 15: for (int j = 0; j < result.length; j++) {
 					sum += result[j]; 
 				}
 				sum/=result.length;
-				sorti.l[0].speed= (float) sum;
+				sortie.l[0].speed= (float) sum;
 		}
 	}
 	
