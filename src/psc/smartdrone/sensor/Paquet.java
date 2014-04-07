@@ -198,4 +198,17 @@ public class Paquet {
 		return result;
 	}
 	
+	public static Paquet makeCommand(float timeUp) {
+		byte[] data = new byte[2+1+4];
+		data[0] = 0;
+		data[1] = (byte) (data.length - 2);
+		data[2] = 6;
+		ByteBuffer buffer = ByteBuffer.wrap(data, 3, 4);
+		buffer.putFloat(timeUp);
+		Paquet ret = new Paquet();
+		ret.mData = data;
+		return ret;
+		
+	}
+	
 }

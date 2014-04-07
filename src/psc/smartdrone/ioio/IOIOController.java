@@ -1,6 +1,8 @@
 package psc.smartdrone.ioio;
 
 
+import psc.smartdrone.android.DataSender;
+import psc.smartdrone.sensor.Paquet;
 import ioio.lib.api.AnalogInput;
 import ioio.lib.api.DigitalInput.Spec;
 import ioio.lib.api.DigitalOutput;
@@ -21,6 +23,8 @@ public class IOIOController extends BaseIOIOLooper {
 	
 	//PWM chosen frequency
 	public final static int freqHz = 100;
+	
+	private DataSender mSender;
 		
 	//Switching
 	private boolean controlling = false; //true if the IOIO has control, false if the receptor controls
@@ -58,6 +62,10 @@ public class IOIOController extends BaseIOIOLooper {
 
 
 	/** Helper functions */
+	
+	public void setDataSender(DataSender d) {
+		mSender = d;
+	}
 	
 	//Getters & setters for cammands
 	public void set_command(Channel c, double value) {
@@ -142,9 +150,9 @@ public class IOIOController extends BaseIOIOLooper {
 		control_switcher_2 = ioio_.openDigitalOutput(3);
 		control_switcher_3 = ioio_.openDigitalOutput(4);
 		//control_switcher_4 = ioio_.openDigitalOutput(5);
-		
-		radio_gaz = ioio_.openPulseInput(new Spec(6), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-		radio_lacet = ioio_.openPulseInput(new Spec(7), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+		*/
+		radio_gaz = ioio_.openPulseInput(new Spec(2), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+		/*radio_lacet = ioio_.openPulseInput(new Spec(7), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 		radio_roulis = ioio_.openPulseInput(new Spec(10), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 		radio_tangage = ioio_.openPulseInput(new Spec(11), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 		//battery_voltage = ioio_.openAnalogInput(9);*/
@@ -180,7 +188,9 @@ public class IOIOController extends BaseIOIOLooper {
 		//Input*/
 		try{
 			//battery_voltage_value = true_voltage(battery_voltage.getVoltage());
-			//radio_gaz_value = command(radio_gaz.getDuration(), true);
+			float d = radio_gaz.getDuration();
+			radio_gaz_value = command(d, true);
+			mSender.sendPaquet(Paquet.makeCommand(d));
 			//radio_lacet_value = command(radio_lacet.getDuration(), false);
 			//radio_tangage_value = command(radio_tangage.getDuration(), false);
 			//radio_roulis_value = command(radio_roulis.getDuration(), false);
