@@ -68,9 +68,14 @@ public class Convert {
 		
 		return new Vector3(x, y, alt);
 	}
-
 	
+	/*
+	 * Convert vector into coordinates defined by orientation angles.
+	 */
 	public static Vector3 rotate(Orient o, Vector3 vect) {
-		return null;
+		Matrix3 rotation = Matrix3.azimuth(o.azimuth)
+				  .product(Matrix3.pitch(o.pitch))
+				  .product(Matrix3.roll(o.roll));
+		return rotation.product(vect);
 	}
 }
