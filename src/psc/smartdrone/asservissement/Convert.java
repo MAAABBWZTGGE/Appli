@@ -1,5 +1,7 @@
 package psc.smartdrone.asservissement;
 
+import psc.smartdrone.sensor.Orient;
+
 /*
  * Class to convert all coordinates to a local map, in meters.
  * Given an origin (latitude, longitude), the axis are X toward East, Y toward North.
@@ -67,4 +69,8 @@ public class Convert {
 		return new Vector3(x, y, alt);
 	}
 
+	
+	public static Vector3 rotate(Orient o, Vector3 vect) {
+		return null;
+	}
 }
