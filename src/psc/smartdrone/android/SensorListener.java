@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import psc.smartdrone.filtre.SensorsToPosition;
 import psc.smartdrone.sensor.*;
 
 import android.content.Context;
@@ -28,6 +29,7 @@ import android.util.Log;
  */
 public class SensorListener implements SensorEventListener, LocationListener {
 
+	private SensorsToPosition mSTP;
 	private DataSender mDataSender;
 	private boolean mStatus;
 	private boolean mStarted;
@@ -47,7 +49,8 @@ public class SensorListener implements SensorEventListener, LocationListener {
 	/*
 	 * Configures a DataSender and a file to write events.
 	 */
-	public SensorListener(Context context, DataSender sender, String pathFileLog) {
+	public SensorListener(Context context, SensorsToPosition stp, DataSender sender, String pathFileLog) {
+		mSTP = stp;
 		mDataSender = sender;
 
 		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -166,12 +169,18 @@ public class SensorListener implements SensorEventListener, LocationListener {
 		try {
 			if (event.sensor == mAcceleration) {
 				//Log.d("acceleration", String.valueOf(event.timestamp / 1000000000.0));
-				mDataSender.sendPaquet(Paquet.makeAcceleration(event.timestamp, new Accel(event.values[0], event.values[1], event.values[2])));
+				Accel a = new Accel(event.values[0], event.values[1], event.values[2]);
+				mSTP.addAccel(a);
+				
+				mDataSender.sendPaquet(Paquet.makeAcceleration(event.timestamp, a));
 				if (mFileWriter != null)
 					mFileWriter.write("a:" + (event.timestamp / 1000000000.0) + ":" + event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
 			} else if (event.sensor == mGyroscope) {
 				//Log.d("gyro", String.valueOf(event.timestamp / 1000000000.0));
-				mDataSender.sendPaquet(Paquet.makeGyroscope(event.timestamp, new Gyro(event.values[0], event.values[1], event.values[2])));
+				Gyro g = new Gyro(event.values[0], event.values[1], event.values[2]);
+				mSTP.addGyro(g);
+				
+				mDataSender.sendPaquet(Paquet.makeGyroscope(event.timestamp, g));
 				if (mFileWriter != null)
 					mFileWriter.write("g:" + (event.timestamp / 1000000000.0) + ":" + event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
 			} else if (event.sensor == mPressure) {
@@ -180,12 +189,18 @@ public class SensorListener implements SensorEventListener, LocationListener {
 					mFileWriter.write("p:" + (event.timestamp / 1000000000.0) + ":" + event.values[0] + "\n");
 			} else if (event.sensor == mMagneticField) {
 				//Log.d("magnetic field", String.valueOf(event.timestamp / 1000000000.0));
-				mDataSender.sendPaquet(Paquet.makeMagneticField(event.timestamp, new Magn(event.values[0], event.values[1], event.values[2])));
+				Magn m = new Magn(event.values[0], event.values[1], event.values[2]);
+				mSTP.addMagn(m);
+				
+				mDataSender.sendPaquet(Paquet.makeMagneticField(event.timestamp, m));
 				if (mFileWriter != null)
 					mFileWriter.write("m:" + (event.timestamp / 1000000000.0) + ":" + event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
 			} else if (event.sensor == mOrientation) {
 				//Log.d("orientation", String.valueOf(event.timestamp / 1000000000.0));
-				mDataSender.sendPaquet(Paquet.makeOrientation(event.timestamp, new Orient(event.values[0], event.values[1], event.values[2])));
+				Orient o = new Orient(event.values[0], event.values[1], event.values[2]);
+				mSTP.addOrient(o);
+				
+				mDataSender.sendPaquet(Paquet.makeOrientation(event.timestamp, o));
 				if (mFileWriter != null)
 					mFileWriter.write("o:" + (event.timestamp / 1000000000.0) + ":" + event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
 			}
@@ -206,7 +221,10 @@ public class SensorListener implements SensorEventListener, LocationListener {
 			//Log.d("location", String.valueOf(location.getTime() / 1000.0));
 			long timeStampSinceEpoch = location.getTime();
 			long timeStampSinceBoot = timeStampSinceEpoch + SystemClock.uptimeMillis() - System.currentTimeMillis();
-			mDataSender.sendPaquet(Paquet.makeLocation(timeStampSinceBoot * 1000000, new GPSLocation((float)location.getLatitude(), (float)location.getLongitude(), (float)location.getAltitude(), location.getSpeed(), location.getAccuracy())));
+			GPSLocation l = new GPSLocation((float)location.getLatitude(), (float)location.getLongitude(), (float)location.getAltitude(), location.getSpeed(), location.getAccuracy());
+			mSTP.addLocation(l);
+			
+			mDataSender.sendPaquet(Paquet.makeLocation(timeStampSinceBoot * 1000000, l));
 			if (mFileWriter != null)
 				mFileWriter.write("\nl:" + (timeStampSinceBoot / 1000.0) + ":" + location.getLatitude() + "," + location.getLongitude() + "," + location.getAltitude() + ":" + location.getSpeed() + ":" + location.getAccuracy() + "\n");
 		} catch (IOException e) {

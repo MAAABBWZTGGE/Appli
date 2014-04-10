@@ -143,7 +143,7 @@ public class Output {
 			Filtre filtreRC = new Filtre();
 			sensorToInput(i, filtreRC.input, s);
 			filtreRC.filtrer(filtreRC.input, rc, filtreRC.result);
-			resultToSensors(i,filtreRC.result);
+			resultToSensors(i, filtreRC.result);
 		}
 	}
 }

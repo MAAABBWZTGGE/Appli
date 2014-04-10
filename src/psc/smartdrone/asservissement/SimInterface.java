@@ -9,49 +9,77 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Vector;
 
+import psc.smartdrone.filtre.Position;
+import psc.smartdrone.filtre.SensorsToPosition;
 import psc.smartdrone.ioio.Channel;
 import psc.smartdrone.ioio.IOIOController;
-
 
 /** Simple example of native library declaration and usage. */
 public class SimInterface {
 	private Vector<String[]> path;
 	private IOIOController mPlane;
+	private SensorsToPosition mSTP;
+	private Position mPos;
 	
-	public SimInterface(IOIOController c) {
+	public SimInterface(IOIOController c, SensorsToPosition stp) {
 		resetAxis();
 		mPlane = c;
+		mSTP = stp;
 	}
 
 	public void setAxis(Channel axis, double value) {
-		if(mPlane != null) {
+		if (mPlane != null)
 			mPlane.set_command(axis, value);
-		}
 	}
 
 	public void resetAxis() {
-		for(Channel c : Channel.values())
+		for (Channel c : Channel.values())
 			setAxis(c, 0);
+	}
+	
+	public void updateCoords() {
+		mPos = mSTP.getPosition();
 	}
 
 	public double getCoord(int axis) {
-		//TODO: Fill. Must take coords from the output of the filter
+		if (mPos == null)
+			updateCoords();
+		
+		//*
 		switch (axis) {
 		case 0:
-			//return sdll.GetPlaneX();
+			return mPos.x();
 		case 1:
-			//return sdll.GetPlaneY();
+			return mPos.y();
 		case 2:
-			//return sdll.GetPlaneZ();
+			return mPos.z();
 		case 3:
-			//return sdll.GetPlanePhi();
+			return mPos.phi();
 		case 4:
-			//return sdll.GetPlaneTheta();
+			return mPos.theta();
 		case 5:
-			//return sdll.GetPlanePsi();
+			return mPos.psi();
 		default:
 			return 0;
 		}
+		/*/
+		switch (axis) {
+		case 0:
+			return sdll.GetPlaneX();
+		case 1:
+			return sdll.GetPlaneY();
+		case 2:
+			return sdll.GetPlaneZ();
+		case 3:
+			return sdll.GetPlanePhi();
+		case 4:
+			return sdll.GetPlaneTheta();
+		case 5:
+			return sdll.GetPlanePsi();
+		default:
+			return 0;
+		}
+		//*/
 	}
 
 	public boolean loadPath(String fname) {
@@ -139,9 +167,8 @@ public class SimInterface {
 	@SuppressWarnings("resource")
 	public static boolean copyFile(File sourceFile, File destFile)
 			throws IOException {
-		if (!destFile.exists()) {
+		if (!destFile.exists())
 			destFile.createNewFile();
-		}
 
 		FileChannel source = null;
 		FileChannel destination = null;
@@ -158,12 +185,10 @@ public class SimInterface {
 		} catch (Exception e) {
 			return false;
 		} finally {
-			if (source != null) {
+			if (source != null)
 				source.close();
-			}
-			if (destination != null) {
+			if (destination != null)
 				destination.close();
-			}
 		}
 	}
 }
