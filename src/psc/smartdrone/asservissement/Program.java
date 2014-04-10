@@ -37,6 +37,7 @@ public class Program {
 
 		spd = 1;
 		speed = 0;
+		sim.updateCoords();
 		X = sim.getCoord(0);
 		Y = sim.getCoord(1);
 		Z = sim.getCoord(2);
@@ -99,8 +100,9 @@ public class Program {
 		//pd(0,dir,new Vector3(-1,0,0),2,kp,kd,ki);
 		//pd(0,dir, new Vector3(cross.getCoord(0)-X,cross.getCoord(1)-Y,cross.getCoord(2)-Z),2,0.05,10);
 		
-		
-		if (-sim.getCoord(2) <= 8)
+
+		//if (-sim.getCoord(2) <= 8)
+		if (-Z <= 8)
 			pd(
 					0,
 					dir,
@@ -141,7 +143,7 @@ public class Program {
 				new Vector3(
 						Math.sqrt(Math.pow(-cross.getCoord(0) + X, 2) + Math.pow(-cross.getCoord(1) + Y, 2)),
 						0,
-						cross.getCoord(2)+Z),
+						cross.getCoord(2) + Z),
 				1,
 				kp,
 				kd,
@@ -183,6 +185,7 @@ public class Program {
 	}
 
 	public void updateCoords () {
+		sim.updateCoords();
 		X = sim.getCoord(0);
 		Y = sim.getCoord(1);
 		Z = sim.getCoord(2);

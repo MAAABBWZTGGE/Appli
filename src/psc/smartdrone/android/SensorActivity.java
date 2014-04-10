@@ -160,7 +160,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 			text.setText("gyroscope :\n" + event.values[0] + " rad/s\n" + event.values[1] + " rad/s\n" + event.values[2] + " rad/s");
 			
 			text = (TextView)findViewById(R.id.gyrintegral);
-			text.setText(mTotalRotation[0] + " °\n" + mTotalRotation[1] + " °\n" + mTotalRotation[2] + " °");
+			text.setText("integrated gyro :\n" + mTotalRotation[0] + " °\n" + mTotalRotation[1] + " °\n" + mTotalRotation[2] + " °");
 		}
 	}
 

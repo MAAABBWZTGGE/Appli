@@ -3,6 +3,7 @@ package psc.smartdrone.android;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOService;
 import psc.smartdrone.asservissement.SimInterface;
+import psc.smartdrone.filtre.SensorsToPosition;
 import psc.smartdrone.ioio.IOIOController;
 import android.content.Intent;
 import android.os.IBinder;
@@ -14,11 +15,16 @@ import android.widget.Toast;
  */
 public class FlyService extends IOIOService {
 
+	private SensorsToPosition mSensorsToPosition;
 	private SensorListener mSensorListener;
 	private SimInterface mInterface;
 	private int mStartId;
 	private IOIOController mController;
 	private DataSender mDataSender;
+	
+	public FlyService() {
+		mSensorsToPosition = new SensorsToPosition();
+	}
 
 	/*
 	 * Start a new thread for monitoring events.
@@ -42,7 +48,6 @@ public class FlyService extends IOIOService {
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener.start();
 		
-		
 		return START_REDELIVER_INTENT;
 	}
 
@@ -61,7 +66,8 @@ public class FlyService extends IOIOService {
 
 		Toast.makeText(getApplicationContext(), "destroyed fly service", Toast.LENGTH_SHORT).show();
 		
-		mSensorListener.close();		
+		if (mSensorListener != null)
+			mSensorListener.close();		
 		stopSelf(mStartId);
 	}
 
@@ -74,12 +80,9 @@ public class FlyService extends IOIOService {
 	
 	@Override
 	protected IOIOLooper createIOIOLooper() {
-		if(mController == null) {
+		if (mController == null) {
 			mController = new IOIOController();
-			mInterface = new SimInterface(mController);
-			//if(mDataSender != null) {
-				//mController.setDataSender(mDataSender);
-			//}
+			mInterface = new SimInterface(mController, mSensorsToPosition);
 		}
 		return mController;
 	}
