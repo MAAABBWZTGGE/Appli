@@ -1,6 +1,10 @@
 package psc.smartdrone.ioio;
 
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import psc.smartdrone.android.DataSender;
 import psc.smartdrone.sensor.Paquet;
 import ioio.lib.api.AnalogInput;
@@ -23,9 +27,14 @@ public class IOIOController extends BaseIOIOLooper {
 	
 	//PWM chosen frequency
 	public final static int freqHz = 100;
+
 	
 	private DataSender mSender;
-		
+	File dir;
+	FileWriter fw;
+	String logPath = "/storage/sdcard0/Documents/Logs/log.txt";
+	
+	
 	//Switching
 	private boolean controlling = false; //true if the IOIO has control, false if the receptor controls
 	private PulseInput input_control;
@@ -135,14 +144,22 @@ public class IOIOController extends BaseIOIOLooper {
 
 	@Override
 	protected void setup() throws ConnectionLostException, InterruptedException {
+		dir = new File(logPath);
+		try {
+			fw = new FileWriter(dir);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		//Radio switch input borne 1   1 high -> 2, 3, 4 low = IOIO control
 		//Switchs out digital 2, 3, 4
 		//PWM IN 6, 7, 10, 11
 		//PWM outs 13, 14, 18
 		led_ = ioio_.openDigitalOutput(IOIO.LED_PIN);
 		//gaz_ = ioio_.openPwmOutput(1, freqHz);
-		/*lacet_ = ioio_.openPwmOutput(13, freqHz);
-		roulis_ = ioio_.openPwmOutput(14, freqHz);
+		lacet_ = ioio_.openPwmOutput(new DigitalOutput.Spec(3, DigitalOutput.Spec.Mode.OPEN_DRAIN), freqHz);
+		/*roulis_ = ioio_.openPwmOutput(14, freqHz);
 		tangage_ = ioio_.openPwmOutput(18, freqHz);
 		*/
 		input_control = ioio_.openPulseInput(new Spec(1), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
@@ -189,8 +206,21 @@ public class IOIOController extends BaseIOIOLooper {
 		try{
 			//battery_voltage_value = true_voltage(battery_voltage.getVoltage());
 			float d = radio_gaz.getDuration();
-			radio_gaz_value = command(d, true);
-			mSender.sendPaquet(Paquet.makeCommand(d));
+			if(fw != null) {
+				try {
+					fw.write("Read: " + d + "\n");
+					fw.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			float command = command(d, false);
+			lacet_.setDutyCycle(duty_cycle(command, false));
+			//radio_gaz_value = command(d, false);
+			/*if(mSender != null) {
+				mSender.sendPaquet(Paquet.makeCommand(d));
+			}*/
 			//radio_lacet_value = command(radio_lacet.getDuration(), false);
 			//radio_tangage_value = command(radio_tangage.getDuration(), false);
 			//radio_roulis_value = command(radio_roulis.getDuration(), false);

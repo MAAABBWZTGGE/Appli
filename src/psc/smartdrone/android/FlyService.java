@@ -32,11 +32,11 @@ public class FlyService extends IOIOService {
 		String dstIP = intent.getStringExtra(FlyActivity.IP_MESSAGE);
 
 		mStartId = startId;
-		mDataSender = new DataSender(dstIP, 6157);
-		if(mController != null) {
-			mController.setDataSender(mDataSender);
-		}
-		mSensorListener = new SensorListener(this, mDataSender, "/storage/sdcard0/Documents/Logs/");
+		//mDataSender = new DataSender("192.168.43.109", 6157);
+		//if(mController != null) {
+			//mController.setDataSender(mDataSender);
+		//}
+		//mSensorListener = new SensorListener(this, mDataSender, "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("10.70.22.234", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.44.204", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
@@ -77,9 +77,9 @@ public class FlyService extends IOIOService {
 		if(mController == null) {
 			mController = new IOIOController();
 			mInterface = new SimInterface(mController);
-			if(mDataSender != null) {
-				mController.setDataSender(mDataSender);
-			}
+			//if(mDataSender != null) {
+				//mController.setDataSender(mDataSender);
+			//}
 		}
 		return mController;
 	}
