@@ -141,7 +141,7 @@ public class Program {
 				new Vector3(
 						Math.sqrt(Math.pow(-cross.getCoord(0) + X, 2) + Math.pow(-cross.getCoord(1) + Y, 2)),
 						0,
-						cross.getCoord(2)+Z),
+						cross.getCoord(2) + Z),
 				1,
 				kp,
 				kd,
