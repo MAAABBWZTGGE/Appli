@@ -18,7 +18,7 @@ public class Program {
 	double theta;
 	double phi;
 	double psi;
-	double time;
+	long time;
 	double dt;
 	double rate;
 	double[] vars = new double[10]; 
@@ -37,7 +37,8 @@ public class Program {
 
 		spd = 1;
 		speed = 0;
-		sim.updateCoords();
+		time = System.currentTimeMillis();
+		sim.updateCoords(time);
 		X = sim.getCoord(0);
 		Y = sim.getCoord(1);
 		Z = sim.getCoord(2);
@@ -47,7 +48,6 @@ public class Program {
 		theta = sim.getCoord(3);
 		phi = sim.getCoord(4);
 		psi = sim.getCoord(5);
-		time = System.currentTimeMillis();
 		dt = 0;
 		rate = 50.0 / 1000.0;
 		kp = 60;
@@ -64,7 +64,7 @@ public class Program {
 		time = System.currentTimeMillis();
 
 		cross.update();
-		updateCoords();
+		updateCoords(time);
 		if (speed == 0)
 			return;
 
@@ -184,8 +184,8 @@ public class Program {
 
 	}
 
-	public void updateCoords () {
-		sim.updateCoords();
+	public void updateCoords(long timestamp) {
+		sim.updateCoords(timestamp);
 		X = sim.getCoord(0);
 		Y = sim.getCoord(1);
 		Z = sim.getCoord(2);

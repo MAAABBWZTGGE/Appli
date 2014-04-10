@@ -7,6 +7,13 @@ import psc.smartdrone.asservissement.Vector3;
  */
 public class Position {
 	
+	public Position() {
+	}
+	
+	public boolean ready() {
+		return pos != null && speed != null;
+	}
+	
 	public double x() {
 		return pos.x;
 	}
@@ -34,5 +41,7 @@ public class Position {
 	
 	// Vitesse.
 	Vector3 speed;
+	// Timestamp (ms).
+	long timestamp;
 
 }

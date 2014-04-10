@@ -1,5 +1,6 @@
 package psc.smartdrone.asservissement;
 
+import psc.smartdrone.sensor.GPSLocation;
 import psc.smartdrone.sensor.Orient;
 
 /*
@@ -48,6 +49,10 @@ public class Convert {
 	 * Error between the two systems is around 0.5% on the X axis.
 	 * Altitude is not modified
 	 */
+	public static Vector3 gpsToLocal(GPSLocation l) {
+		return gpsToLocal(l.lat, l.lon, l.alt);
+	}
+	
 	public static Vector3 gpsToLocal(double lat, double lon, double alt) {
 		if (!mHasOrigin)
 			setOrigin(lat, lon);

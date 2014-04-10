@@ -37,14 +37,11 @@ public class SimInterface {
 			setAxis(c, 0);
 	}
 	
-	public void updateCoords() {
-		mPos = mSTP.getPosition();
+	public void updateCoords(long timestamp) {
+		mPos = mSTP.getPosition(timestamp);
 	}
 
 	public double getCoord(int axis) {
-		if (mPos == null)
-			updateCoords();
-		
 		//*
 		switch (axis) {
 		case 0:

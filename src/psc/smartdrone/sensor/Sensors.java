@@ -17,5 +17,13 @@ public class Sensors {
 		o = new Vector<Orient>();
 		l = new Vector<GPSLocation>();
 	}
+	
+	public void clear() {
+		g.clear();
+		a.clear();
+		m.clear();
+		o.clear();
+		l.clear();
+	}
 
 }

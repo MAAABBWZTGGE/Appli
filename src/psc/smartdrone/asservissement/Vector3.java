@@ -11,6 +11,24 @@ public class Vector3 {
 		this.z = z;
 	}
 	
+	public void add(Vector3 v) {
+		x += v.x;
+		y += v.y;
+		z += v.z;
+	}
+	
+	public Vector3 less(Vector3 v) {
+		return new Vector3(x - v.x, y - v.y, z - v.z);
+	}
+	
+	public Vector3 times(double d) {
+		return new Vector3(x * d, y * d, z * d);
+	}
+	
+	public Vector3 div(double d) {
+		return new Vector3(x / d, y / d, z / d);
+	}
+	
 	public double scalar(Vector3 v) {
 		return x*v.x + y*v.y + z*v.z;
 	}
