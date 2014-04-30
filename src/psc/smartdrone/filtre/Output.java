@@ -150,12 +150,13 @@ public class Output {
 		}
 	}
 	
-	void f () {
+	public Sensors getSensors () {
 		for (int i = 0 ; i < 16 ; i++) {
 			Filtre filtreRC = new Filtre();
 			sensorToInput(i, filtreRC.input);
 			filtreRC.filtrer(filtreRC.input, rc, filtreRC.result);
 			resultToSensors(i, filtreRC.result);
 		}
+		return s;
 	}
 }
