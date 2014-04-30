@@ -38,11 +38,9 @@ public class SensorsToPosition {
 		mSensors.l.add(l);
 	}
 	
-	
 	public Position getPosition(long timestamp) {
 		/*
 		 * TODO: Fill.
-		 * TODO: Take coords from the output of the filter.
 		 * TODO: Use other sensors than only GPS.
 		 * TODO: Add angles.
 		 */
