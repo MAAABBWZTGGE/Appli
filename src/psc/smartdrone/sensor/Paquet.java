@@ -12,7 +12,7 @@ public class Paquet {
 
 	public byte[] mData;
 	
-	public static Paquet makeDataOfLog(DataOfLog dataOfLog) {
+	/*public static Paquet makeDataOfLog(DataOfLog dataOfLog) {
 		byte[] data = new byte[79];
 		
 		// size
@@ -53,7 +53,7 @@ public class Paquet {
 		Paquet result = new Paquet();
 		result.mData = data;
 		return result;
-	}
+	}*/
 	
 	/*
 	 * Build packet for acceleration sensor.

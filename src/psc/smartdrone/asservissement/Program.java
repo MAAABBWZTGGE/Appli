@@ -214,40 +214,4 @@ public class Program {
 		return e;
 	}
 
-	/*
-	public void keyPressed(KeyEvent e) {
-		if (KeyEvent.getKeyText(e.getKeyCode()).equals("O")) {
-			sim.setAxis(3, .6);
-		}
-		if (KeyEvent.getKeyText(e.getKeyCode()).equals("L")) {
-			sim.setAxis(3, 0);
-		}
-		if (KeyEvent.getKeyText(e.getKeyCode()).equals("K")) {
-			sim.setAxis(0, .5);
-		}
-		if (KeyEvent.getKeyText(e.getKeyCode()).equals("M")) {
-			sim.setAxis(0, -.5);
-		}
-	}
-
-	public void keyReleased(KeyEvent e) {
-		if (KeyEvent.getKeyText(e.getKeyCode()).equals("K")) {
-			sim.setAxis(2, 0);
-		}
-		if (KeyEvent.getKeyText(e.getKeyCode()).equals("M")) {
-			sim.setAxis(2, 0);
-		}
-		if (KeyEvent.getKeyText(e.getKeyCode()).equals("O")) {
-			sim.setAxis(3, 0);
-		}
-		
-		if (KeyEvent.getKeyText(e.getKeyCode()).equals("A")) {
-			kp+=1;
-			System.out.println(kp);
-		}
-		if (KeyEvent.getKeyText(e.getKeyCode()).equals("Q")) {
-			kp-=1;
-			System.out.println(kp);
-		}
-	}*/
 }

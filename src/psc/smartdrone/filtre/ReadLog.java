@@ -15,7 +15,7 @@ import psc.smartdrone.sensor.*;
  *
  */
 
-public class ReadLog {
+/*public class ReadLog {
 	public static void main (String[] args) {
 		String ipAdress = "127.0.0.1";
 		DataSender dataSender = new DataSender(ipAdress, 6157);
@@ -68,3 +68,4 @@ public class ReadLog {
 		dataSender.close();
 	}
 }
+*/
