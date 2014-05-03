@@ -120,12 +120,13 @@ public class IOIOController extends BaseIOIOLooper {
 		} else {
 			return (float) ((duty_cycle - 0.15) * 20);
 		}*/
+		if(is_gaz) return (high_duration - 0.001f) * 1000.f;
 		return (high_duration - 0.0015f) * 2000.f;
 	}
 	
 	protected float duty_cycle(double c, boolean is_gaz) {
-		if (c > 1.0)
-			c = 1.0;
+		//if (c > 1.0)
+		//	c = 1.0;
 		
 		if (is_gaz && c < 0.0)
 			c = 0.0;
@@ -147,7 +148,7 @@ public class IOIOController extends BaseIOIOLooper {
 			e.printStackTrace();
 		}*/
 		
-		//Radio switch input borne 18   18 high -> IOIO control
+		//Radio switch input borne 10   10 high -> IOIO control
 		//PWM IN 1, 4, 7, 12
 		//PWM outs 3, 6, 11, 14
 		led_ = ioio_.openDigitalOutput(IOIO.LED_PIN);
@@ -156,9 +157,8 @@ public class IOIOController extends BaseIOIOLooper {
 		roulis_ = ioio_.openPwmOutput(new DigitalOutput.Spec(6, DigitalOutput.Spec.Mode.OPEN_DRAIN), freqHz);
 		tangage_ = ioio_.openPwmOutput(new DigitalOutput.Spec(11, DigitalOutput.Spec.Mode.OPEN_DRAIN), freqHz);
 		
-		input_control = ioio_.openPulseInput(new Spec(18), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-
-		radio_gaz = ioio_.openPulseInput(new Spec(1), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+		input_control = ioio_.openPulseInput(new Spec(10), ClockRate.RATE_2MHz, PulseMode.POSITIVE, true);
+		radio_gaz = ioio_.openPulseInput(new Spec(1), ClockRate.RATE_2MHz, PulseMode.POSITIVE, true);
 		radio_lacet = ioio_.openPulseInput(new Spec(12), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 		radio_roulis = ioio_.openPulseInput(new Spec(4), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
 		radio_tangage = ioio_.openPulseInput(new Spec(7), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
@@ -187,10 +187,10 @@ public class IOIOController extends BaseIOIOLooper {
 		radio_tangage_value = command(radio_tangage.getDuration(), false);
 		
 		if(controlling) {
-			gaz_.setDutyCycle(duty_cycle(gaz_command, true));
-			lacet_.setDutyCycle(duty_cycle(lacet_command, false));
+			gaz_.setDutyCycle(duty_cycle(radio_gaz_value /*gaz_command*/, true));
+			lacet_.setDutyCycle(duty_cycle(radio_lacet_value/*lacet_command*/, false));
 			roulis_.setDutyCycle(duty_cycle(roulis_command, false));
-			tangage_.setDutyCycle(duty_cycle(tangage_command, false));
+			tangage_.setDutyCycle(duty_cycle(radio_tangage_value/*tangage_command*/, false));
 		} else {
 			gaz_.setDutyCycle(duty_cycle(radio_gaz_value, true));
 			lacet_.setDutyCycle(duty_cycle(radio_lacet_value, false));
@@ -201,7 +201,7 @@ public class IOIOController extends BaseIOIOLooper {
 			Thread.sleep(20);
 		} catch (InterruptedException e) {
 		}
-			
+		
 	}
 	
 }

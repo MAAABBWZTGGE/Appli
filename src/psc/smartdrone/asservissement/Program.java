@@ -31,7 +31,7 @@ public class Program {
 	}
 
 	public void initialisation() {
-		sim.loadPath("loopBis.txt");
+		//sim.loadPath("loopBis.txt");
 
 		cross = new Cross(sim, 1, 100);
 
@@ -63,7 +63,7 @@ public class Program {
 			return;
 		time = System.currentTimeMillis();
 
-		cross.update();
+		//cross.update();
 		updateCoords(time);
 		if (speed == 0)
 			return;
@@ -102,7 +102,7 @@ public class Program {
 		
 
 		//if (-sim.getCoord(2) <= 8)
-		if (-Z <= 8)
+		/*if (-Z <= 8)
 			pd(
 					0,
 					dir,
@@ -113,17 +113,17 @@ public class Program {
 					2,
 					kp,
 					kd,
-					ki);
+					ki);*/
 		
-		double kRot = 0.1;
+		/*double kRot = 0.1;
 		Vector3 proj = new Vector3(
 				-cross.getCoord(0) + X,
 				-cross.getCoord(1) + Y,
 				0);
 		
 		//double thetaCons = (180 / Math.PI) * Math.atan(2*speed*kRot*dir.scalar(proj) / (9.81*dir.norm()*proj.norm()));
-		double thetaCons = (180 / Math.PI) * Math.atan(2*speed*kRot*dir.normScalar(proj) / 9.81);
-
+		double thetaCons = (180 / Math.PI) * Math.atan(2*speed*kRot*dir.normScalar(proj) / 9.81);*/
+			double thetaCons = 0;
 		pd(
 				1,
 				ldir,
@@ -137,7 +137,7 @@ public class Program {
 				1);
 		
 		System.out.println(speed);
-		pd(
+		/*pd(
 				2,
 				hdir,
 				new Vector3(
@@ -147,7 +147,7 @@ public class Program {
 				1,
 				kp,
 				kd,
-				ki);
+				ki);*/
 	}
 	
 	public void pd(int id, Vector3 dir, Vector3 cDir, int axis, double kp, double kd, double ki) {

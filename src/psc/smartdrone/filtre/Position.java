@@ -37,7 +37,7 @@ public class Position {
 	// Coordonnées en mètres.
 	Vector3 pos;
 	// Angles de rotation.
-	double phi, theta, psi;
+	double phi = 0, theta = 0, psi = 0;
 	
 	// Vitesse.
 	Vector3 speed;

@@ -32,8 +32,8 @@ public class SensorsToPosition {
 	
 	public void addOrient(Orient o) {
 		mSensors.o.add(o);
-		mPosition.phi = o.pitch;
-		mPosition.theta = o.roll;
+		mPosition.phi = o.roll;
+		mPosition.theta = o.pitch;
 		mPosition.psi = o.azimuth;
 	}
 	
@@ -76,6 +76,12 @@ public class SensorsToPosition {
 		mSensors.clear();
 		// Return estimated position.
 		mPosition.timestamp = timestamp;
+		if(mPosition.pos == null) {
+			mPosition.pos = new Vector3(0, 0, 0);
+		}
+		if(mPosition.speed == null) {
+			mPosition.speed = new Vector3(0, 0, 0);
+		}
 		return mPosition;
 	}
 

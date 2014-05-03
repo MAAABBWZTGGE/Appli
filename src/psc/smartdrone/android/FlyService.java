@@ -8,6 +8,7 @@ import psc.smartdrone.filtre.SensorsToPosition;
 import psc.smartdrone.ioio.IOIOController;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,7 +16,7 @@ import android.widget.Toast;
 /*
  * Service activated during the flight.
  */
-public class FlyService extends /*IOIO*/Service {
+public class FlyService extends IOIOService {
 
 	private SensorsToPosition mSensorsToPosition;
 	private SensorListener mSensorListener;
@@ -24,6 +25,8 @@ public class FlyService extends /*IOIO*/Service {
 	private IOIOController mController;
 	private DataSender mDataSender;
 	private Program mProgram;
+	private Handler h;
+	private Runnable programCallback;
 	
 	public FlyService() {
 		mSensorsToPosition = new SensorsToPosition();
@@ -41,13 +44,25 @@ public class FlyService extends /*IOIO*/Service {
 		//String dstIP = intent.getStringExtra(FlyActivity.IP_MESSAGE);
 
 		mStartId = startId;
-		mDataSender = new DataSender("84.99.63.234", 6157);
+		//mDataSender = new DataSender("84.99.63.234", 6157);
 		
 		mSensorListener = new SensorListener(this, mSensorsToPosition, mDataSender, "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("10.70.22.234", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.44.204", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
 		mSensorListener.start();
+		
+		h = new Handler();
+		
+		programCallback = new Runnable() {
+			@Override
+			public void run() {
+				mProgram.mainLoop();
+				h.postDelayed(programCallback, 100);
+			}
+		};
+		
+		programCallback.run();
 		
 		return START_REDELIVER_INTENT;
 	}
@@ -85,7 +100,7 @@ public class FlyService extends /*IOIO*/Service {
 			mController = new IOIOController();
 			mInterface = new SimInterface(mController, mSensorsToPosition);
 			mProgram = new Program(mInterface);
-			mProgram.initialisation();
+			//mProgram.initialisation();
 		}
 		return mController;
 	}

@@ -14,7 +14,6 @@ import psc.smartdrone.filtre.SensorsToPosition;
 import psc.smartdrone.ioio.Channel;
 import psc.smartdrone.ioio.IOIOController;
 
-/** Simple example of native library declaration and usage. */
 public class SimInterface {
 	private Vector<String[]> path;
 	private IOIOController mPlane;
@@ -59,24 +58,6 @@ public class SimInterface {
 		default:
 			return 0;
 		}
-		/*/
-		switch (axis) {
-		case 0:
-			return sdll.GetPlaneX();
-		case 1:
-			return sdll.GetPlaneY();
-		case 2:
-			return sdll.GetPlaneZ();
-		case 3:
-			return sdll.GetPlanePhi();
-		case 4:
-			return sdll.GetPlaneTheta();
-		case 5:
-			return sdll.GetPlanePsi();
-		default:
-			return 0;
-		}
-		//*/
 	}
 
 	public boolean loadPath(String fname) {
