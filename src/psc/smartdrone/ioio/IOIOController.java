@@ -29,7 +29,7 @@ public class IOIOController extends BaseIOIOLooper {
 	public final static int freqHz = 100;
 
 	
-	private DataSender mSender;
+	//private DataSender mSender;
 	File dir;
 	FileWriter fw;
 	String logPath = "/storage/sdcard0/Documents/Logs/log.txt";
@@ -38,10 +38,6 @@ public class IOIOController extends BaseIOIOLooper {
 	//Switching
 	private boolean controlling = false; //true if the IOIO has control, false if the receptor controls
 	private PulseInput input_control;
-	private DigitalOutput control_switcher_1;
-	private DigitalOutput control_switcher_2;
-	private DigitalOutput control_switcher_3;
-	private DigitalOutput control_switcher_4;
 	
 	//Outputs	
 	private PwmOutput gaz_;
@@ -60,7 +56,7 @@ public class IOIOController extends BaseIOIOLooper {
 	private PulseInput radio_lacet;
 	private PulseInput radio_roulis;
 	private PulseInput radio_tangage;
-	private AnalogInput battery_voltage;
+	//private AnalogInput battery_voltage;
 	private float radio_gaz_value = 0.f;
 	private float radio_lacet_value = 0.f ;
 	private float radio_roulis_value = 0.f;
@@ -72,9 +68,9 @@ public class IOIOController extends BaseIOIOLooper {
 
 	/** Helper functions */
 	
-	public void setDataSender(DataSender d) {
+	/*public void setDataSender(DataSender d) {
 		mSender = d;
-	}
+	}*/
 	
 	//Getters & setters for cammands
 	public void set_command(Channel c, double value) {
@@ -148,31 +144,25 @@ public class IOIOController extends BaseIOIOLooper {
 		try {
 			fw = new FileWriter(dir);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		//Radio switch input borne 1   1 high -> 2, 3, 4 low = IOIO control
-		//Switchs out digital 2, 3, 4
-		//PWM IN 6, 7, 10, 11
-		//PWM outs 13, 14, 18
+		//Radio switch input borne 18   18 high -> IOIO control
+		//PWM IN 1, 4, 7, 12
+		//PWM outs 3, 6, 11, 14
 		led_ = ioio_.openDigitalOutput(IOIO.LED_PIN);
-		//gaz_ = ioio_.openPwmOutput(1, freqHz);
-		lacet_ = ioio_.openPwmOutput(new DigitalOutput.Spec(3, DigitalOutput.Spec.Mode.OPEN_DRAIN), freqHz);
-		/*roulis_ = ioio_.openPwmOutput(14, freqHz);
-		tangage_ = ioio_.openPwmOutput(18, freqHz);
-		*/
-		input_control = ioio_.openPulseInput(new Spec(1), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-		/*control_switcher_1 = ioio_.openDigitalOutput(2);
-		control_switcher_2 = ioio_.openDigitalOutput(3);
-		control_switcher_3 = ioio_.openDigitalOutput(4);
-		//control_switcher_4 = ioio_.openDigitalOutput(5);
-		*/
-		radio_gaz = ioio_.openPulseInput(new Spec(2), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-		/*radio_lacet = ioio_.openPulseInput(new Spec(7), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-		radio_roulis = ioio_.openPulseInput(new Spec(10), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-		radio_tangage = ioio_.openPulseInput(new Spec(11), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
-		//battery_voltage = ioio_.openAnalogInput(9);*/
+		gaz_ = ioio_.openPwmOutput(new DigitalOutput.Spec(3, DigitalOutput.Spec.Mode.OPEN_DRAIN), freqHz);
+		lacet_ = ioio_.openPwmOutput(new DigitalOutput.Spec(14, DigitalOutput.Spec.Mode.OPEN_DRAIN), freqHz);
+		roulis_ = ioio_.openPwmOutput(new DigitalOutput.Spec(6, DigitalOutput.Spec.Mode.OPEN_DRAIN), freqHz);
+		tangage_ = ioio_.openPwmOutput(new DigitalOutput.Spec(11, DigitalOutput.Spec.Mode.OPEN_DRAIN), freqHz);
+		
+		input_control = ioio_.openPulseInput(new Spec(18), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+
+		radio_gaz = ioio_.openPulseInput(new Spec(1), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+		radio_lacet = ioio_.openPulseInput(new Spec(12), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+		radio_roulis = ioio_.openPulseInput(new Spec(4), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+		radio_tangage = ioio_.openPulseInput(new Spec(7), ClockRate.RATE_2MHz, PulseMode.POSITIVE, false);
+		//battery_voltage = ioio_.openAnalogInput(9);
 	}
 
 	@Override
@@ -190,41 +180,25 @@ public class IOIOController extends BaseIOIOLooper {
 			}
 		}
 		
-		/*//Switch
-		control_switcher_1.write(!controlling);
-		control_switcher_2.write(!controlling);
-		control_switcher_3.write(!controlling);
-		//control_switcher_4.write(!controlling);
+		//Inputs
+		radio_gaz_value = command(radio_gaz.getDuration(), true);
+		radio_lacet_value = command(radio_lacet.getDuration(), false);
+		radio_roulis_value = command(radio_roulis.getDuration(), false);
+		radio_tangage_value = command(radio_tangage.getDuration(), false);
+		
 		if(controlling) {
-			//Output
-			//gaz_.setDutyCycle(duty_cycle(gaz_command, true));
+			gaz_.setDutyCycle(duty_cycle(gaz_command, true));
 			lacet_.setDutyCycle(duty_cycle(lacet_command, false));
 			roulis_.setDutyCycle(duty_cycle(roulis_command, false));
 			tangage_.setDutyCycle(duty_cycle(tangage_command, false));
-		} 
-		//Input*/
+		} else {
+			gaz_.setDutyCycle(duty_cycle(radio_gaz_value, true));
+			lacet_.setDutyCycle(duty_cycle(radio_lacet_value, false));
+			roulis_.setDutyCycle(duty_cycle(radio_roulis_value, false));
+			tangage_.setDutyCycle(duty_cycle(radio_tangage_value, false));
+		}
 		try{
-			//battery_voltage_value = true_voltage(battery_voltage.getVoltage());
-			float d = radio_gaz.getDuration();
-			if(fw != null) {
-				try {
-					fw.write("Read: " + d + "\n");
-					fw.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			float command = command(d, false);
-			lacet_.setDutyCycle(duty_cycle(command, false));
-			//radio_gaz_value = command(d, false);
-			/*if(mSender != null) {
-				mSender.sendPaquet(Paquet.makeCommand(d));
-			}*/
-			//radio_lacet_value = command(radio_lacet.getDuration(), false);
-			//radio_tangage_value = command(radio_tangage.getDuration(), false);
-			//radio_roulis_value = command(radio_roulis.getDuration(), false);
-			Thread.sleep(50);
+			Thread.sleep(20);
 		} catch (InterruptedException e) {
 		}
 			

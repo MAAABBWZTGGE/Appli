@@ -38,20 +38,16 @@ public class FlyService extends /*IOIO*/Service {
 		super.onStartCommand(intent, flags, startId);
 		Log.d("FlyService", "onStartCommand()");
 				
-		String dstIP = intent.getStringExtra(FlyActivity.IP_MESSAGE);
+		//String dstIP = intent.getStringExtra(FlyActivity.IP_MESSAGE);
 
 		mStartId = startId;
-		mDataSender = new DataSender("192.168.1.81", 6157);
+		mDataSender = new DataSender("84.99.63.234", 6157);
 		
 		mSensorListener = new SensorListener(this, mSensorsToPosition, mDataSender, "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("10.70.22.234", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.44.204", 6157), "/storage/sdcard0/Documents/Logs/");
 		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
 		mSensorListener.start();
-		
-		if(mController != null) {
-			mController.setDataSender(mDataSender);
-		}
 		
 		return START_REDELIVER_INTENT;
 	}
