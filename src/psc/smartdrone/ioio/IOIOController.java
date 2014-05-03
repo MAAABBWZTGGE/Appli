@@ -30,9 +30,9 @@ public class IOIOController extends BaseIOIOLooper {
 
 	
 	//private DataSender mSender;
-	File dir;
-	FileWriter fw;
-	String logPath = "/storage/sdcard0/Documents/Logs/log.txt";
+	//File dir;
+	//FileWriter fw;
+	//String logPath = "/storage/sdcard0/Documents/Logs/log.txt";
 	
 	
 	//Switching
@@ -140,12 +140,12 @@ public class IOIOController extends BaseIOIOLooper {
 
 	@Override
 	protected void setup() throws ConnectionLostException, InterruptedException {
-		dir = new File(logPath);
+		/*dir = new File(logPath);
 		try {
 			fw = new FileWriter(dir);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 		//Radio switch input borne 18   18 high -> IOIO control
 		//PWM IN 1, 4, 7, 12

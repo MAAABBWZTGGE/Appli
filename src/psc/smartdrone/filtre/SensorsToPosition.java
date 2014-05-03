@@ -32,6 +32,9 @@ public class SensorsToPosition {
 	
 	public void addOrient(Orient o) {
 		mSensors.o.add(o);
+		mPosition.phi = o.pitch;
+		mPosition.theta = o.roll;
+		mPosition.psi = o.azimuth;
 	}
 	
 	public void addLocation(GPSLocation l) {
@@ -71,7 +74,6 @@ public class SensorsToPosition {
 		}
 		
 		mSensors.clear();
-		
 		// Return estimated position.
 		mPosition.timestamp = timestamp;
 		return mPosition;

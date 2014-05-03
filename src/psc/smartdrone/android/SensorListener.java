@@ -146,13 +146,13 @@ public class SensorListener implements SensorEventListener, LocationListener {
 				mFileWriter = null;
 			}
 
-			mSensorManager.registerListener(this, mAcceleration, SensorManager.SENSOR_DELAY_UI);//*
-			mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_UI);
+			mSensorManager.registerListener(this, mAcceleration, 20000/*SensorManager.SENSOR_DELAY_UI*/);//*
+			mSensorManager.registerListener(this, mGyroscope, 20000/*SensorManager.SENSOR_DELAY_UI*/);
 			// N/A for Galaxy S3 mini.
-			mSensorManager.registerListener(this, mPressure, SensorManager.SENSOR_DELAY_UI);
+			mSensorManager.registerListener(this, mPressure, 20000/*SensorManager.SENSOR_DELAY_UI*/);
 			// Stops when screen is locked...
-			mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_UI);
-			mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_UI);//*/
+			mSensorManager.registerListener(this, mMagneticField, 20000/*SensorManager.SENSOR_DELAY_UI*/);
+			mSensorManager.registerListener(this, mOrientation, 20000/*SensorManager.SENSOR_DELAY_UI*/);//*/
 			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 			
 			mStatus = true;
