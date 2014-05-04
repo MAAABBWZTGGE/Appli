@@ -16,7 +16,7 @@ import android.widget.Toast;
 /*
  * Service activated during the flight.
  */
-public class FlyService extends IOIOService {
+public class FlyService extends /*IOIO*/Service {
 
 	private SensorsToPosition mSensorsToPosition;
 	private SensorListener mSensorListener;
@@ -45,11 +45,9 @@ public class FlyService extends IOIOService {
 
 		mStartId = startId;
 		//mDataSender = new DataSender("84.99.63.234", 6157);
+		//mDataSender = new DataSender("192.168.1.81", 6157);
 		
 		mSensorListener = new SensorListener(this, mSensorsToPosition, mDataSender, "/storage/sdcard0/Documents/Logs/");
-		//mSensorListener = new SensorListener(this, new DataSender("10.70.22.234", 6157), "/storage/sdcard0/Documents/Logs/");
-		//mSensorListener = new SensorListener(this, new DataSender("192.168.44.204", 6157), "/storage/sdcard0/Documents/Logs/");
-		//mSensorListener = new SensorListener(this, new DataSender("192.168.43.109", 6157), "/storage/sdcard0/Documents/Logs/");
 		mSensorListener.start();
 		
 		h = new Handler();
@@ -58,7 +56,9 @@ public class FlyService extends IOIOService {
 			@Override
 			public void run() {
 				mProgram.mainLoop();
-				h.postDelayed(programCallback, 100);
+				if(h != null) {
+					h.postDelayed(programCallback, 100);
+				}
 			}
 		};
 		

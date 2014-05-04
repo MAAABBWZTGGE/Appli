@@ -30,7 +30,7 @@ import android.util.Log;
 public class SensorListener implements SensorEventListener, LocationListener {
 
 	private SensorsToPosition mSTP;
-	//private DataSender mDataSender;
+	private DataSender mDataSender;
 	private boolean mStatus;
 	private boolean mStarted;
 	
@@ -51,7 +51,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 	 */
 	public SensorListener(Context context, SensorsToPosition stp, DataSender sender, String pathFileLog) {
 		mSTP = stp;
-		//mDataSender = sender;
+		mDataSender = sender;
 
 		mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		mAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -77,7 +77,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 		Log.d("SensorListener", "start()");
 		
 		if (!mStarted) {
-			//mDataSender.start();
+			if(mDataSender != null) mDataSender.start();
 			resume();
 			mStarted = true;
 		}
@@ -100,7 +100,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//mDataSender.close();
+			if(mDataSender != null) mDataSender.close();
 			mSensorManager.unregisterListener(this);
 			mLocationManager.removeUpdates(this);
 			mStatus = false;
@@ -115,7 +115,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 		Log.d("SensorListener", "close()");
 		
 		pause();
-		//mDataSender.close();
+		if(mDataSender != null) mDataSender.close();
 	}
 	
 	/*
@@ -146,13 +146,13 @@ public class SensorListener implements SensorEventListener, LocationListener {
 				mFileWriter = null;
 			}
 
-			mSensorManager.registerListener(this, mAcceleration, 20000/*SensorManager.SENSOR_DELAY_UI*/);//*
-			mSensorManager.registerListener(this, mGyroscope, 20000/*SensorManager.SENSOR_DELAY_UI*/);
+			mSensorManager.registerListener(this, mAcceleration, 100000/*SensorManager.SENSOR_DELAY_UI*/);//*
+			mSensorManager.registerListener(this, mGyroscope, 100000/*SensorManager.SENSOR_DELAY_UI*/);
 			// N/A for Galaxy S3 mini.
-			mSensorManager.registerListener(this, mPressure, 20000/*SensorManager.SENSOR_DELAY_UI*/);
+			mSensorManager.registerListener(this, mPressure, 100000/*SensorManager.SENSOR_DELAY_UI*/);
 			// Stops when screen is locked...
-			mSensorManager.registerListener(this, mMagneticField, 20000/*SensorManager.SENSOR_DELAY_UI*/);
-			mSensorManager.registerListener(this, mOrientation, 20000/*SensorManager.SENSOR_DELAY_UI*/);//*/
+			mSensorManager.registerListener(this, mMagneticField, 100000/*SensorManager.SENSOR_DELAY_UI*/);
+			mSensorManager.registerListener(this, mOrientation, 100000/*SensorManager.SENSOR_DELAY_UI*/);//*/
 			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 			
 			mStatus = true;
@@ -173,7 +173,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 				Accel a = new Accel(event.values[0], event.values[1], event.values[2]);
 				mSTP.addAccel(a);
 				
-				//mDataSender.sendPaquet(Paquet.makeAcceleration(event.timestamp, a));
+				if(mDataSender != null) mDataSender.sendPaquet(Paquet.makeAcceleration(event.timestamp, a));
 				if (mFileWriter != null)
 					mFileWriter.write("a:" + (event.timestamp / 1000000000.0) + ":" + event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
 			} else if (event.sensor == mGyroscope) {
@@ -182,7 +182,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 				Gyro g = new Gyro(event.values[0], event.values[1], event.values[2]);
 				mSTP.addGyro(g);
 				
-				//mDataSender.sendPaquet(Paquet.makeGyroscope(event.timestamp, g));
+				if(mDataSender != null) mDataSender.sendPaquet(Paquet.makeGyroscope(event.timestamp, g));
 				if (mFileWriter != null)
 					mFileWriter.write("g:" + (event.timestamp / 1000000000.0) + ":" + event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
 			} else if (event.sensor == mPressure) {
@@ -195,7 +195,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 				Magn m = new Magn(event.values[0], event.values[1], event.values[2]);
 				mSTP.addMagn(m);
 				
-				//mDataSender.sendPaquet(Paquet.makeMagneticField(event.timestamp, m));
+				if(mDataSender != null) mDataSender.sendPaquet(Paquet.makeMagneticField(event.timestamp, m));
 				if (mFileWriter != null)
 					mFileWriter.write("m:" + (event.timestamp / 1000000000.0) + ":" + event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
 			} else if (event.sensor == mOrientation) {
@@ -204,7 +204,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 				Orient o = new Orient(event.values[0], event.values[1], event.values[2]);
 				mSTP.addOrient(o);
 				
-				//mDataSender.sendPaquet(Paquet.makeOrientation(event.timestamp, o));
+				if(mDataSender != null) mDataSender.sendPaquet(Paquet.makeOrientation(event.timestamp, o));
 				if (mFileWriter != null)
 					mFileWriter.write("o:" + (event.timestamp / 1000000000.0) + ":" + event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
 			}
@@ -228,7 +228,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 			GPSLocation l = new GPSLocation((float)location.getLatitude(), (float)location.getLongitude(), (float)location.getAltitude(), location.getSpeed(), location.getAccuracy());
 			mSTP.addLocation(l);
 			
-			//mDataSender.sendPaquet(Paquet.makeLocation(timeStampSinceBoot * 1000000, l));
+			if(mDataSender != null) mDataSender.sendPaquet(Paquet.makeLocation(timeStampSinceBoot * 1000000, l));
 			if (mFileWriter != null)
 				mFileWriter.write("\nl:" + (timeStampSinceBoot / 1000.0) + ":" + location.getLatitude() + "," + location.getLongitude() + "," + location.getAltitude() + ":" + location.getSpeed() + ":" + location.getAccuracy() + "\n");
 		} catch (IOException e) {
