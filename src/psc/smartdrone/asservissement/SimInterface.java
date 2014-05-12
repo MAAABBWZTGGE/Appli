@@ -41,7 +41,6 @@ public class SimInterface {
 	}
 
 	public double getCoord(int axis) {
-		//*
 		switch (axis) {
 		case 0:
 			return mPos.x();
