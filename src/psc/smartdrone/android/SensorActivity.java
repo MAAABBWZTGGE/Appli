@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import psc.smartdrone.R;
+import psc.smartdrone.sensor.Orient;
 
 /**
  * Activity to test sensors.
@@ -29,13 +30,16 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 	private Sensor mHumidity;
 	private Sensor mLight;
 	private Sensor mMagneticField;
-	private Sensor mOrientation;
+	private Sensor mOldOrientation;
 	private Sensor mAcceleration;
 	private Sensor mGyroscope;
 	private long mLastTimeGyroscope;
 	private float[] mTotalRotation;
 	
 	private LocationManager mLocationManager;
+	
+	private float[] accel;
+	private float[] magnet;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +56,10 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		text.setText("light : unknown");
 		text = (TextView)findViewById(R.id.magfield);
 		text.setText("magnetic field : unknown");
-		text = (TextView)findViewById(R.id.orientation);
-		text.setText("orientation : unknown");
+		text = (TextView)findViewById(R.id.old_orientation);
+		text.setText("old orientation : unknown");
+		text = (TextView)findViewById(R.id.new_orientation);
+		text.setText("new orientation : unknown");
 		text = (TextView)findViewById(R.id.acceleration);
 		text.setText("acceleration : unknown");
 		text = (TextView)findViewById(R.id.gyroscope);
@@ -69,7 +75,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		mHumidity = mSensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
 		mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 		mMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+		mOldOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 		mAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 		
@@ -89,7 +95,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		mSensorManager.registerListener(this, mHumidity, SensorManager.SENSOR_DELAY_NORMAL);
 		mSensorManager.registerListener(this, mLight, SensorManager.SENSOR_DELAY_NORMAL);
 		mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
-		mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_NORMAL);
+		mSensorManager.registerListener(this, mOldOrientation, SensorManager.SENSOR_DELAY_NORMAL);
 		mSensorManager.registerListener(this, mAcceleration, SensorManager.SENSOR_DELAY_NORMAL);
 		mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 		
@@ -130,16 +136,24 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		{
 			TextView text = (TextView)findViewById(R.id.magfield);
 			text.setText("magnetic field :\n" + event.values[0] + " µT\n" + event.values[1] + " µT\n" + event.values[2] + " µT");
+
+			magnet = event.values.clone();
+			if (accel != null)
+				updateOrientation();
 		}
-		if (event.sensor == mOrientation)
+		if (event.sensor == mOldOrientation)
 		{
-			TextView text = (TextView)findViewById(R.id.orientation);
-			text.setText("orientation :\n" + event.values[0] + " °\n" + event.values[1] + " °\n" + event.values[2] + " °");
+			TextView text = (TextView)findViewById(R.id.old_orientation);
+			text.setText("old orientation :\n" + event.values[0] + " °\n" + event.values[1] + " °\n" + event.values[2] + " °");
 		}
 		if (event.sensor == mAcceleration)
 		{
 			TextView text = (TextView)findViewById(R.id.acceleration);
 			text.setText("acceleration :\n" + event.values[0] + " m/s²\n" + event.values[1] + " m/s²\n" + event.values[2] + " m/s²");
+			
+			accel = event.values.clone();
+			if (magnet != null)
+				updateOrientation();
 		}
 		if (event.sensor == mGyroscope)
 		{
@@ -162,6 +176,17 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 			text = (TextView)findViewById(R.id.gyrintegral);
 			text.setText("integrated gyro :\n" + mTotalRotation[0] + " °\n" + mTotalRotation[1] + " °\n" + mTotalRotation[2] + " °");
 		}
+	}
+	
+	private void updateOrientation() {
+		float[] rotation = new float[16];
+		float[] orient = new float[3];
+		
+		SensorManager.getRotationMatrix(rotation, null, accel, magnet);
+		SensorManager.getOrientation(rotation, orient);
+
+		TextView text = (TextView)findViewById(R.id.new_orientation);
+		text.setText("new orientation :\n" + (float)Math.toDegrees(orient[0]) + " °\n" + (float)Math.toDegrees(orient[1]) + " °\n" + (float)Math.toDegrees(orient[2]) + " °");
 	}
 
 	@Override
