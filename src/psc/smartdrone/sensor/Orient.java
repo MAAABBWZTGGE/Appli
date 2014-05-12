@@ -11,6 +11,6 @@ public class Orient {
 	}
 	
 	void print() {
-		System.out.print("o:[" + time + "s] " + azimuth + " " + pitch + " " + roll + ",");
+		System.out.print("o:[" + time + "ms] " + azimuth + " " + pitch + " " + roll + ",");
 	}
 }

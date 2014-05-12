@@ -173,7 +173,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 			if (event.sensor == mAcceleration) {
 				//Log.d("acceleration", String.valueOf(event.timestamp / 1000000000.0));
 
-				Accel a = new Accel(event.timestamp / 1000000000.0, event.values[0], event.values[1], event.values[2]);
+				Accel a = new Accel(event.timestamp / 1000000.0, event.values[0], event.values[1], event.values[2]);
 				mSTP.addAccel(a);
 				
 				if (mDataSender != null)
@@ -183,7 +183,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 				
 				accel = event.values.clone();
 				if (magnet != null) {
-					Orient o = getOrientation(event.timestamp / 1000000000.0);
+					Orient o = getOrientation(event.timestamp / 1000000.0);
 					mSTP.addOrient(o);
 					
 					if (mDataSender != null)
@@ -195,7 +195,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 			} else if (event.sensor == mMagneticField) {
 				//Log.d("magnetic field", String.valueOf(event.timestamp / 1000000000.0));
 
-				Magn m = new Magn(event.timestamp / 1000000000.0, event.values[0], event.values[1], event.values[2]);
+				Magn m = new Magn(event.timestamp / 1000000.0, event.values[0], event.values[1], event.values[2]);
 				mSTP.addMagn(m);
 				
 				if (mDataSender != null)
@@ -205,7 +205,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 
 				magnet = event.values.clone();
 				if (accel != null) {
-					Orient o = getOrientation(event.timestamp / 1000000000.0);
+					Orient o = getOrientation(event.timestamp / 1000000.0);
 					mSTP.addOrient(o);
 					
 					if (mDataSender != null)
@@ -217,7 +217,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 			} else if (event.sensor == mGyroscope) {
 				//Log.d("gyro", String.valueOf(event.timestamp / 1000000000.0));
 
-				Gyro g = new Gyro(event.timestamp / 1000000000.0, event.values[0], event.values[1], event.values[2]);
+				Gyro g = new Gyro(event.timestamp / 1000000.0, event.values[0], event.values[1], event.values[2]);
 				mSTP.addGyro(g);
 				
 				if (mDataSender != null)
@@ -268,7 +268,7 @@ public class SensorListener implements SensorEventListener, LocationListener {
 			//Log.d("location", String.valueOf(location.getTime() / 1000.0));
 			long timeStampSinceEpoch = location.getTime();
 			long timeStampSinceBoot = timeStampSinceEpoch + SystemClock.uptimeMillis() - System.currentTimeMillis();
-			GPSLocation l = new GPSLocation(timeStampSinceBoot / 1000.0, (float)location.getLatitude(), (float)location.getLongitude(), (float)location.getAltitude(), location.getSpeed(), location.getAccuracy());
+			GPSLocation l = new GPSLocation(timeStampSinceBoot, (float)location.getLatitude(), (float)location.getLongitude(), (float)location.getAltitude(), location.getSpeed(), location.getAccuracy());
 			mSTP.addLocation(l);
 			
 			if(mDataSender != null) mDataSender.sendPaquet(Paquet.makeLocation(timeStampSinceBoot * 1000000, l));

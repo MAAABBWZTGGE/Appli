@@ -11,6 +11,6 @@ public class Magn {
 	}
 
 	void print() {
-		System.out.print("m:[" + time + "s] " + x + " " + y + " " + z + ",");
+		System.out.print("m:[" + time + "ms] " + x + " " + y + " " + z + ",");
 	}
 }

@@ -11,6 +11,6 @@ public class GPSLocation {
 	}
 	
 	void print() {
-		System.out.print("l:[" + time + "s] " + lat + " " + lon + " " + alt + " " + speed + " " + accuracy + ",");
+		System.out.print("l:[" + time + "ms] " + lat + " " + lon + " " + alt + " " + speed + " " + accuracy + ",");
 	}
 }

@@ -11,6 +11,6 @@ public class Gyro {
 	}
 
 	void print() {
-		System.out.print("g:[" + time + "s] " + x + " " + y + " " + z + ",");
+		System.out.print("g:[" + time + "ms] " + x + " " + y + " " + z + ",");
 	}
 }

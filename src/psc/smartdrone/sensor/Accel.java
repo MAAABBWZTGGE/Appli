@@ -11,6 +11,6 @@ public class Accel {
 	}
 
 	void print() {
-		System.out.print("a:[" + time + "s] " + x + " " + y + " " + z + ",");
+		System.out.print("a:[" + time + "ms] " + x + " " + y + " " + z + ",");
 	}
 }
