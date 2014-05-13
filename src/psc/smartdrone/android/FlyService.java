@@ -1,7 +1,6 @@
 package psc.smartdrone.android;
 
 import ioio.lib.util.IOIOLooper;
-import ioio.lib.util.android.IOIOService;
 import psc.smartdrone.asservissement.Program;
 import psc.smartdrone.asservissement.SimInterface;
 import psc.smartdrone.filtre.SensorsToPosition;

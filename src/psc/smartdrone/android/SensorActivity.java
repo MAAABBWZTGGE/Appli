@@ -1,5 +1,6 @@
 package psc.smartdrone.android;
 
+import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,7 +16,6 @@ import android.app.Activity;
 import android.content.Context;
 
 import psc.smartdrone.R;
-import psc.smartdrone.sensor.Orient;
 
 /**
  * Activity to test sensors.
@@ -32,6 +32,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 	private Sensor mMagneticField;
 	private Sensor mOldOrientation;
 	private Sensor mAcceleration;
+	private Sensor mLinearAcceleration;
 	private Sensor mGyroscope;
 	private long mLastTimeGyroscope;
 	private float[] mTotalRotation;
@@ -40,6 +41,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 	
 	private float[] accel;
 	private float[] magnet;
+	private float[] gps;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,20 +50,24 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 
 		TextView text = (TextView)findViewById(R.id.pressure);
 		text.setText("pressure : unknown");
+		text = (TextView)findViewById(R.id.light);
+		text.setText("light : unknown");
 		text = (TextView)findViewById(R.id.temperature);
 		text.setText("temperature : unknown");
 		text = (TextView)findViewById(R.id.humidity);
 		text.setText("humidity : unknown");
-		text = (TextView)findViewById(R.id.light);
-		text.setText("light : unknown");
-		text = (TextView)findViewById(R.id.magfield);
-		text.setText("magnetic field : unknown");
-		text = (TextView)findViewById(R.id.old_orientation);
-		text.setText("old orientation : unknown");
-		text = (TextView)findViewById(R.id.new_orientation);
-		text.setText("new orientation : unknown");
 		text = (TextView)findViewById(R.id.acceleration);
 		text.setText("acceleration : unknown");
+		text = (TextView)findViewById(R.id.linear_acceleration);
+		text.setText("linear acceleration : unknown");
+		text = (TextView)findViewById(R.id.new_orientation);
+		text.setText("new orientation : unknown");
+		text = (TextView)findViewById(R.id.old_orientation);
+		text.setText("old orientation : unknown");
+		text = (TextView)findViewById(R.id.magfield);
+		text.setText("magnetic field : unknown");
+		text = (TextView)findViewById(R.id.compass);
+		text.setText("compass : unknown");
 		text = (TextView)findViewById(R.id.gyroscope);
 		text.setText("gyroscope : unknown");
 		text = (TextView)findViewById(R.id.gps);
@@ -77,6 +83,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		mMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 		mOldOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 		mAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 		mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 		
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -97,6 +104,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
 		mSensorManager.registerListener(this, mOldOrientation, SensorManager.SENSOR_DELAY_NORMAL);
 		mSensorManager.registerListener(this, mAcceleration, SensorManager.SENSOR_DELAY_NORMAL);
+		mSensorManager.registerListener(this, mLinearAcceleration, SensorManager.SENSOR_DELAY_NORMAL);
 		mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 		
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
@@ -109,33 +117,37 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		mSensorManager.unregisterListener(this);
 		mLocationManager.removeUpdates(this);
 	}
+	
+	private float round(float num, float coeff) {
+		return Math.round(num * coeff) / coeff;
+	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		if (event.sensor == mPressure)
 		{
 			TextView text = (TextView)findViewById(R.id.pressure);
-			text.setText("pressure : " + event.values[0] + " hPa");
+			text.setText("pressure : " + round(event.values[0], 10) + " hPa");
 		}
 		if (event.sensor == mTemperature)
 		{
 			TextView text = (TextView)findViewById(R.id.temperature);
-			text.setText("temperature : " + event.values[0] + " °C");
+			text.setText("temperature : " + round(event.values[0], 10) + " °C");
 		}
 		if (event.sensor == mHumidity)
 		{
 			TextView text = (TextView)findViewById(R.id.humidity);
-			text.setText("humidity : " + event.values[0] + " %");
+			text.setText("humidity : " + round(event.values[0], 10) + " %");
 		}
 		if (event.sensor == mLight)
 		{
 			TextView text = (TextView)findViewById(R.id.light);
-			text.setText("light : " + event.values[0] + " lx");
+			text.setText("light : " + round(event.values[0], 1) + " lx");
 		}
 		if (event.sensor == mMagneticField)
 		{
 			TextView text = (TextView)findViewById(R.id.magfield);
-			text.setText("magnetic field :\n" + event.values[0] + " µT\n" + event.values[1] + " µT\n" + event.values[2] + " µT");
+			text.setText("magnetic field :\n" + round(event.values[0], 10) + " µT\n" + round(event.values[1], 10) + " µT\n" + round(event.values[2], 10) + " µT");
 
 			magnet = event.values.clone();
 			if (accel != null)
@@ -144,26 +156,33 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		if (event.sensor == mOldOrientation)
 		{
 			TextView text = (TextView)findViewById(R.id.old_orientation);
-			text.setText("old orientation :\n" + event.values[0] + " °\n" + event.values[1] + " °\n" + event.values[2] + " °");
+			text.setText("old orientation :\n" + round(event.values[0], 1) + " °\n" + round(event.values[1], 1) + " °\n" + round(event.values[2], 1) + " °");
 		}
 		if (event.sensor == mAcceleration)
 		{
 			TextView text = (TextView)findViewById(R.id.acceleration);
-			text.setText("acceleration :\n" + event.values[0] + " m/s²\n" + event.values[1] + " m/s²\n" + event.values[2] + " m/s²");
+			text.setText("acceleration :\n" + round(event.values[0], 100) + " m/s²\n" + round(event.values[1], 100) + " m/s²\n" + round(event.values[2], 100) + " m/s²");
 			
 			accel = event.values.clone();
 			if (magnet != null)
 				updateOrientation();
 		}
+		if (event.sensor == mLinearAcceleration)
+		{
+			TextView text = (TextView)findViewById(R.id.linear_acceleration);
+			text.setText("linear acceleration :\n" + round(event.values[0], 100) + " m/s²\n" + round(event.values[1], 100) + " m/s²\n" + round(event.values[2], 100) + " m/s²");			
+		}
 		if (event.sensor == mGyroscope)
 		{
+			event.values[0] *= 180 / Math.PI;
+			event.values[1] *= 180 / Math.PI;
+			event.values[2] *= 180 / Math.PI;
+			
 			if (mLastTimeGyroscope != 0)
 			{
 				long diff = event.timestamp - mLastTimeGyroscope;
 				double time = diff;
 				time /= 1000000000;
-				time *= 180;
-				time /= Math.PI;
 				mTotalRotation[0] += event.values[0] * time;
 				mTotalRotation[1] += event.values[1] * time;
 				mTotalRotation[2] += event.values[2] * time;
@@ -171,10 +190,10 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 			mLastTimeGyroscope = event.timestamp;
 			
 			TextView text = (TextView)findViewById(R.id.gyroscope);
-			text.setText("gyroscope :\n" + event.values[0] + " rad/s\n" + event.values[1] + " rad/s\n" + event.values[2] + " rad/s");
+			text.setText("gyroscope :\n" + round(event.values[0], 10) + " °/s\n" + round(event.values[1], 10) + " °/s\n" + round(event.values[2], 10) + " °/s");
 			
 			text = (TextView)findViewById(R.id.gyrintegral);
-			text.setText("integrated gyro :\n" + mTotalRotation[0] + " °\n" + mTotalRotation[1] + " °\n" + mTotalRotation[2] + " °");
+			text.setText("integrated gyro :\n" + round(mTotalRotation[0], 1) + " °\n" + round(mTotalRotation[1], 1) + " °\n" + round(mTotalRotation[2], 1) + " °");
 		}
 	}
 	
@@ -186,7 +205,14 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		SensorManager.getOrientation(rotation, orient);
 
 		TextView text = (TextView)findViewById(R.id.new_orientation);
-		text.setText("new orientation :\n" + (float)Math.toDegrees(orient[0]) + " °\n" + (float)Math.toDegrees(orient[1]) + " °\n" + (float)Math.toDegrees(orient[2]) + " °");
+		text.setText("new orientation :\n" + round((float)Math.toDegrees(orient[0]), 1) + " °\n" + round((float)Math.toDegrees(orient[1]), 1) + " °\n" + round((float)Math.toDegrees(orient[2]), 1) + " °");
+		
+		if (gps != null) {
+			GeomagneticField geofield = new GeomagneticField(gps[0], gps[1], gps[2], System.currentTimeMillis());
+			
+			text = (TextView)findViewById(R.id.compass);
+			text.setText("compass :\n" + round((float)(Math.toDegrees(orient[0]) + geofield.getDeclination()), 1) + " ° from N");
+		}
 	}
 
 	@Override
@@ -194,6 +220,11 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 		TextView text = (TextView)findViewById(R.id.gps);
 		text.setText("gps :\n" + location.getLatitude() + " °N\n" + location.getLongitude() + " °E\n" + location.getAltitude() + " m"
 		+ "\n" + location.getSpeed() + " m/s\n+- " + location.getAccuracy() + " m\n" + location.getTime() + " ms since EPOCH\n");
+		
+		gps = new float[3];
+		gps[0] = (float)location.getLatitude();
+		gps[1] = (float)location.getLongitude();
+		gps[2] = (float)location.getAltitude();
 	}
 
 	@Override
